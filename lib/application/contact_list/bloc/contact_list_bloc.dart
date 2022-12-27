@@ -17,13 +17,10 @@ class ContactListBloc extends Bloc<ContactListEvent, List<ContactDataModel>> {
     add(ContactListFetchCompletedEvent(contactDataModelList: []));
   }
 
-  void _fetchAllContacts(ContactListFetchCompletedEvent event,
-      Emitter<List<ContactDataModel>> emit) {
-    emit(_repository.getAllContacts());
-    // _repository.getAllContacts().then(
-    //   (value) {
-    //     emit(value);
-    //   },
-    // );
+  Future<void> _fetchAllContacts(ContactListFetchCompletedEvent event,
+      Emitter<List<ContactDataModel>> emit) async {
+    // emit(_repository.getAllContacts());
+    final list = await _repository.getAllContacts();
+    emit(list);
   }
 }
