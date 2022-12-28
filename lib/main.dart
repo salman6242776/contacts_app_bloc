@@ -1,4 +1,7 @@
+import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/bloc/add_edit_contact_bloc.dart';
+import 'package:contact_app_bloc_architecture/application/screens/contact_list/bloc/contact_list_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './application/screens/contact_list/screen/contact_list_screen.dart';
 import 'application/screens/add_or_edit_contact/screen/add_edit_contact_screen.dart';
@@ -35,9 +38,20 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      // home: MultiBlocProvider(
+      //   providers: [
+      //     BlocProvider(
+      //       create: (context) => ContactListBloc(),
+      //     ),
+      //     BlocProvider(
+      //       create: ((context) => AddEditContactBloc()),
+      //     )
+      //   ],
+      //   child: const ContactListScreen(),
+      // ),
       // home: const ContactListScreen(),
       routes: {
-        '/': (_) => const ContactListScreen(),
+        '/': (_) => ContactListScreen(),
         AddEditContactScreen.routeName: (_) => AddEditContactScreen()
       },
     );

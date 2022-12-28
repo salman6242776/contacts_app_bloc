@@ -100,6 +100,10 @@ class AddEditContactScreen extends StatelessWidget {
       return addEditContactBloc.state;
     }));
 
+    if (addEditContactState is CreateCompletedState) {
+      Navigator.of(context).pop();
+    }
+
     return addEditContactState == ShowLoaderState()
         ? CircularProgressIndicator()
         : Padding(

@@ -1,3 +1,4 @@
+import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/bloc/add_edit_contact_bloc.dart';
 import 'package:path/path.dart';
 
 import '../../../../application/screens/contact_list/bloc/contact_list_bloc.dart';
@@ -18,14 +19,24 @@ class ContactListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Contact List"),
       ),
-      body: BlocProvider(
-        create: (_) => ContactListBloc(),
-        child: BlocBuilder<ContactListBloc, List<ContactDataModel>>(
-          builder: (context, state) {
-            return getListView(context);
-          },
-          // buildWhen: (previous, current) =>
-          //     current.runtimeType != previous.runtimeType,
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => ContactListBloc(),
+          ),
+          BlocProvider(
+            create: ((context) => AddEditContactBloc()),
+          )
+        ],
+        child: BlocProvider(
+          create: (_) => ContactListBloc(),
+          child: BlocBuilder<ContactListBloc, List<ContactDataModel>>(
+            builder: (context, state) {
+              return getListView(context);
+            },
+            // buildWhen: (previous, current) =>
+            //     current.runtimeType != previous.runtimeType,
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
