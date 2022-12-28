@@ -29,6 +29,7 @@ class AddEditContactScreen extends StatelessWidget {
   String get _getAppBarTitle => isEdit ? "Edit Contact" : "Add New Contact";
 
   void onSaveClickListener(BuildContext context) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     final isValid = _form.currentState?.validate();
     if (isValid == true) {
       if (selectAndPreviewImage.selectedImagePath != null) {
