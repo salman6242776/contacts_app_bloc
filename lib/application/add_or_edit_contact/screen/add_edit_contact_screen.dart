@@ -10,8 +10,16 @@ class AddEditContactScreen extends StatelessWidget {
   AddEditContactScreen({super.key});
 
   bool get isEdit => contactDataModel != null && contactDataModel?.id != null;
-  bool get isNameValid =>
+  bool get _isNameValid =>
       contactDataModel != null && contactDataModel?.name.isNotEmpty == true;
+
+  bool get _isMobileNumberValid =>
+      contactDataModel != null &&
+      contactDataModel?.mobileNumber.isNotEmpty == true;
+
+  bool get _isLandlineNumberValid =>
+      contactDataModel != null &&
+      contactDataModel?.landlineNumber.isNotEmpty == true;
 
   String get _getAppBarTitle => isEdit ? "Edit Contact" : "Add New Contact";
 
@@ -56,29 +64,39 @@ class AddEditContactScreen extends StatelessWidget {
               getFormTextField(
                   initalValue: contactDataModel?.name ?? "",
                   label: "Name",
-                  errorMessage: "Please enter name",
                   textInputType: TextInputType.text,
                   textInputAction: TextInputAction.next,
+                  validator: (value) {
+                    return _isNameValid ? null : "Please enter name";
+                  },
                   toUpdate: (value) {
                     contactDataModel?.name = value;
                   }),
               getFormTextField(
                   initalValue: contactDataModel?.name ?? "",
                   label: "Mobile#",
-                  errorMessage: "Please enter mobile number",
                   textInputType: TextInputType.phone,
                   textInputAction: TextInputAction.next,
+                  validator: (value) {
+                    return _isMobileNumberValid
+                        ? null
+                        : "Please enter mobile number";
+                  },
                   toUpdate: (value) {
                     contactDataModel?.mobileNumber = value;
                   }),
               getFormTextField(
                   initalValue: contactDataModel?.name ?? "",
                   label: "Landline#",
-                  errorMessage: "Please enter landline number",
                   textInputType: TextInputType.phone,
                   textInputAction: TextInputAction.done,
+                  validator: (value) {
+                    return _isLandlineNumberValid
+                        ? null
+                        : "Please enter landline number";
+                  },
                   toUpdate: (value) {
-                    contactDataModel?.mobileNumber = value;
+                    contactDataModel?.landlineNumber = value;
                   }),
             ],
           ),
@@ -87,13 +105,14 @@ class AddEditContactScreen extends StatelessWidget {
     );
   }
 
-  Widget getFormTextField(
-      {required String initalValue,
-      required String label,
-      required String errorMessage,
-      required TextInputType textInputType,
-      required TextInputAction textInputAction,
-      required Function toUpdate}) {
+  Widget getFormTextField({
+    required String initalValue,
+    required String label,
+    required TextInputType textInputType,
+    required TextInputAction textInputAction,
+    required Function validator,
+    required Function toUpdate,
+  }) {
     return TextFormField(
       initialValue: initalValue, //contactDataModel?.name ?? "",
       keyboardType: textInputType,
@@ -101,13 +120,7 @@ class AddEditContactScreen extends StatelessWidget {
         labelText: label, //"Name",
       ),
       textInputAction: textInputAction,
-      validator: (value) {
-        if (isNameValid) {
-          return null;
-        } else {
-          return errorMessage; //"Please enter name";
-        }
-      },
+      validator: (value) => validator(value),
       onChanged: (value) {
         toUpdate(value);
       },
