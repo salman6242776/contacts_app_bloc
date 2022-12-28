@@ -1,17 +1,39 @@
-import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/bloc/add_edit_contact_bloc.dart';
-import 'package:path/path.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../application/screens/contact_list/bloc/contact_list_bloc.dart';
 import '../../../../application/screens/contact_list/widgets/contact_list_item.dart';
 import '../../add_or_edit_contact/screen/add_edit_contact_screen.dart';
-import '../../../../data/model/contact_data_model.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 // import '../link_screen_and_block.dart';
 
-class ContactListScreen extends StatelessWidget {
+class ContactListScreen extends StatefulWidget {
   const ContactListScreen({super.key});
+
+  @override
+  State<ContactListScreen> createState() => _ContactListScreenState();
+}
+
+class _ContactListScreenState extends State<ContactListScreen> {
+  late ContactListBloc _contactListBloc;
+
+  @override
+  void initState() {
+    _contactListBloc = ContactListBloc();
+    _getAllContacts();
+    super.initState();
+  }
+
+  void _getAllContacts() {
+    _contactListBloc
+        .add(ContactListFetchCompletedEvent(contactDataModelList: []));
+  }
+
+  @override
+  void dispose() {
+    _contactListBloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,29 +41,20 @@ class ContactListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Contact List"),
       ),
-      body: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => ContactListBloc(),
-          ),
-          BlocProvider(
-            create: ((context) => AddEditContactBloc()),
-          )
-        ],
-        child: BlocProvider(
-          create: (_) => ContactListBloc(),
-          child: BlocBuilder<ContactListBloc, List<ContactDataModel>>(
-            builder: (context, state) {
-              return getListView(context);
-            },
-            // buildWhen: (previous, current) =>
-            //     current.runtimeType != previous.runtimeType,
-          ),
-        ),
+      body: BlocBuilder(
+        bloc: _contactListBloc,
+        builder: (context, state) {
+          return getListView(context);
+        },
+        // buildWhen: (previous, current) {
+        //   return previous.runtimeType != current.runtimeType;
+        // },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushNamed(AddEditContactScreen.routeName);
+          Navigator.of(context)
+              .pushNamed(AddEditContactScreen.routeName)
+              .then((value) => _getAllContacts());
         },
         child: const Icon(Icons.add),
       ),
@@ -49,9 +62,7 @@ class ContactListScreen extends StatelessWidget {
   }
 
   Widget getListView(BuildContext context) {
-    List<ContactDataModel> list = context
-        .select((ContactListBloc contactListBloc) => contactListBloc.state);
-    return list.isEmpty
+    return _contactListBloc.state.isEmpty
         ? Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -64,7 +75,8 @@ class ContactListScreen extends StatelessWidget {
               TextButton(
                 onPressed: () {
                   Navigator.of(context)
-                      .pushNamed(AddEditContactScreen.routeName);
+                      .pushNamed(AddEditContactScreen.routeName)
+                      .then((value) => _getAllContacts());
                 },
                 child: const Text("Add New Contact"),
               )
@@ -73,14 +85,15 @@ class ContactListScreen extends StatelessWidget {
         : ListView.builder(
             itemBuilder: ((context, index) {
               return ContactListItem(
-                  contactDataModel: list[index],
+                  contactDataModel: _contactListBloc.state[index],
                   onItemClickListener: (selectedContact) {
-                    Navigator.of(context).pushNamed(
-                        AddEditContactScreen.routeName,
-                        arguments: selectedContact);
+                    Navigator.of(context)
+                        .pushNamed(AddEditContactScreen.routeName,
+                            arguments: selectedContact)
+                        .then((value) => _getAllContacts());
                   });
             }),
-            itemCount: list.length,
+            itemCount: _contactListBloc.state.length,
           );
   }
 }

@@ -14,7 +14,6 @@ class ContactListBloc extends Bloc<ContactListEvent, List<ContactDataModel>> {
     _repository = Repository();
 
     on<ContactListFetchCompletedEvent>(_fetchAllContacts);
-    add(ContactListFetchCompletedEvent(contactDataModelList: []));
   }
 
   Future<void> _fetchAllContacts(ContactListFetchCompletedEvent event,

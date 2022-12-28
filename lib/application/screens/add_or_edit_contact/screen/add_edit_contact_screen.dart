@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/bloc/add_edit_contact_bloc.dart';
 import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/widgets/select_and_preview_image.dart';
 import 'package:contact_app_bloc_architecture/common/database_configuration.dart';
@@ -8,20 +10,47 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../components/custom_text_form_field.dart';
 import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
 
-class AddEditContactScreen extends StatelessWidget {
+class AddEditContactScreen extends StatefulWidget {
   static const routeName = '/add_edit_contact_screen';
-  late AddEditContactBloc _addEditContactBloc; // = AddEditContactBloc();
+  AddEditContactScreen({super.key});
+
+  @override
+  State<AddEditContactScreen> createState() => _AddEditContactScreenState();
+}
+
+class _AddEditContactScreenState extends State<AddEditContactScreen> {
+  late AddEditContactBloc _addEditContactBloc;
+  late StreamSubscription blocSubscription;
+  // = AddEditContactBloc();
   ContactDataModel? contactDataModel;
 
   final _form = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    _addEditContactBloc = AddEditContactBloc();
+
+    blocSubscription = _addEditContactBloc.stream.listen((receivedState) {
+      if (receivedState is CreateCompletedState) {
+        Navigator.of(context).pop();
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    blocSubscription.cancel();
+    _addEditContactBloc.close();
+    super.dispose();
+  }
 
   void profilePictureSelectCallback(String imagePath) {
     contactDataModel?.profilePicture = imagePath;
   }
 
-  AddEditContactScreen({super.key});
-
   bool get isEdit => contactDataModel != null && contactDataModel?.id != null;
+
   bool get _isNameValid =>
       contactDataModel != null && contactDataModel?.name.isNotEmpty == true;
 
@@ -67,44 +96,50 @@ class AddEditContactScreen extends StatelessWidget {
             ContactDataModel();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_getAppBarTitle),
-        actions: [
-          IconButton(
-            onPressed: () {
-              onSaveClickListener(context);
-            },
-            icon: Icon(isEdit ? Icons.update : Icons.save),
-          ),
-          if (isEdit)
+        appBar: AppBar(
+          title: Text(_getAppBarTitle),
+          actions: [
             IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.delete),
+              onPressed: () {
+                onSaveClickListener(context);
+              },
+              icon: Icon(isEdit ? Icons.update : Icons.save),
             ),
-        ],
-      ),
-      body: BlocProvider(
-          create: (context) => AddEditContactBloc(),
-          child: BlocBuilder<AddEditContactBloc, AddEditContactState>(
-            builder: (context, state) {
-              return blockProviderChild(context);
-            },
-          )),
-    );
+            if (isEdit)
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.delete),
+              ),
+          ],
+        ),
+        body: BlocBuilder(
+          bloc: _addEditContactBloc,
+          builder: (context, state) {
+            return blockProviderChild(context);
+          },
+        )
+        // BlocProvider(
+        //     create: (context) => AddEditContactBloc(),
+        //     child: BlocBuilder<AddEditContactBloc, AddEditContactState>(
+        //       builder: (context, state) {
+        //         return blockProviderChild(context);
+        //       },
+        //     )),
+        );
   }
 
   Widget blockProviderChild(BuildContext context) {
-    AddEditContactState addEditContactState =
-        context.select(((AddEditContactBloc addEditContactBloc) {
-      _addEditContactBloc = addEditContactBloc;
-      return addEditContactBloc.state;
-    }));
+    // AddEditContactState addEditContactState =
+    //     context.select(((AddEditContactBloc addEditContactBloc) {
+    //   _addEditContactBloc = addEditContactBloc;
+    //   return addEditContactBloc.state;
+    // }));
 
-    if (addEditContactState is CreateCompletedState) {
-      Navigator.of(context).pop();
-    }
+    // if (addEditContactState is CreateCompletedState) {
+    //   Navigator.of(context).pop();
+    // }
 
-    return addEditContactState == ShowLoaderState()
+    return _addEditContactBloc.state == ShowLoaderState()
         ? CircularProgressIndicator()
         : Padding(
             padding: const EdgeInsets.all(10),

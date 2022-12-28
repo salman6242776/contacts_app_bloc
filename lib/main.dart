@@ -38,20 +38,20 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // home: MultiBlocProvider(
-      //   providers: [
-      //     BlocProvider(
-      //       create: (context) => ContactListBloc(),
-      //     ),
-      //     BlocProvider(
-      //       create: ((context) => AddEditContactBloc()),
-      //     )
-      //   ],
-      //   child: const ContactListScreen(),
-      // ),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => ContactListBloc(),
+          ),
+          BlocProvider(
+            create: ((context) => AddEditContactBloc()),
+          )
+        ],
+        child: const ContactListScreen(),
+      ),
       // home: const ContactListScreen(),
       routes: {
-        '/': (_) => ContactListScreen(),
+        // '/': (_) => ContactListScreen(),
         AddEditContactScreen.routeName: (_) => AddEditContactScreen()
       },
     );
