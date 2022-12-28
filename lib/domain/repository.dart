@@ -38,9 +38,18 @@ class Repository {
 
   // }
 
-  // Future<bool> AddContact(ContactDataModel contactDataModel) async{
-
-  // }
+  Future<int> addContact(ContactDataModel contactDataModel) async {
+    return DbHelper.insert(
+      TblContactsConfigration.tblName,
+      {
+        TblContactsConfigration.name: contactDataModel.name,
+        TblContactsConfigration.mobileNumber: contactDataModel.mobileNumber,
+        TblContactsConfigration.landlineNumber: contactDataModel.landlineNumber,
+        TblContactsConfigration.isFavorite: contactDataModel.isfavorite,
+        TblContactsConfigration.profilePicture: contactDataModel.profilePicture
+      },
+    );
+  }
   // Future<bool> DeleteContact(int id) async{
 
   // }

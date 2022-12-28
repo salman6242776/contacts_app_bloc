@@ -1,14 +1,16 @@
+import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/bloc/add_edit_contact_bloc.dart';
 import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/widgets/select_and_preview_image.dart';
 import 'package:contact_app_bloc_architecture/common/database_configuration.dart';
 import 'package:contact_app_bloc_architecture/helpers/db_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../components/custom_text_form_field.dart';
 import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
 
 class AddEditContactScreen extends StatelessWidget {
   static const routeName = '/add_edit_contact_screen';
-
+  late AddEditContactBloc _addEditContactBloc; // = AddEditContactBloc();
   ContactDataModel? contactDataModel;
 
   final _form = GlobalKey<FormState>();
@@ -54,22 +56,7 @@ class AddEditContactScreen extends StatelessWidget {
 
   void onSaveClickListener(BuildContext context) {
     if (_isViewIsValid(context)) {
-      DbHelper.insert(
-        TblContactsConfigration.tblName,
-
-        // {TblContactsConfigration.id : } ,
-        {
-          TblContactsConfigration.name: contactDataModel?.name ?? "",
-          TblContactsConfigration.mobileNumber:
-              contactDataModel?.mobileNumber ?? "",
-          TblContactsConfigration.landlineNumber:
-              contactDataModel?.landlineNumber ?? "",
-          TblContactsConfigration.isFavorite:
-              contactDataModel?.isfavorite ?? false,
-          TblContactsConfigration.profilePicture:
-              contactDataModel?.profilePicture ?? ''
-        },
-      );
+      _addEditContactBloc.add(CreateUserEvent(contactDataModel!));
     }
   }
 
@@ -96,56 +83,75 @@ class AddEditContactScreen extends StatelessWidget {
             ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Form(
-          key: _form,
-          child: ListView(
-            children: [
-              CustomTextFormField(
-                  initalValue: contactDataModel?.name ?? "",
-                  label: "Name",
-                  textInputType: TextInputType.text,
-                  textInputAction: TextInputAction.next,
-                  validator: (value) {
-                    return _isNameValid ? null : "Please enter name";
-                  },
-                  toUpdate: (value) {
-                    contactDataModel?.name = value;
-                  }),
-              CustomTextFormField(
-                  initalValue: contactDataModel?.name ?? "",
-                  label: "Mobile#",
-                  textInputType: TextInputType.phone,
-                  textInputAction: TextInputAction.next,
-                  validator: (value) {
-                    return _isMobileNumberValid
-                        ? null
-                        : "Please enter mobile number";
-                  },
-                  toUpdate: (value) {
-                    contactDataModel?.mobileNumber = value;
-                  }),
-              CustomTextFormField(
-                  initalValue: contactDataModel?.name ?? "",
-                  label: "Landline#",
-                  textInputType: TextInputType.phone,
-                  textInputAction: TextInputAction.done,
-                  validator: (value) {
-                    return _isLandlineNumberValid
-                        ? null
-                        : "Please enter landline number";
-                  },
-                  toUpdate: (value) {
-                    contactDataModel?.landlineNumber = value;
-                  }),
-              SelectAndPreviewImage(profilePictureSelectCallback: (imagePath) {
-                profilePictureSelectCallback(imagePath);
-              }),
-            ],
-          ),
-        ),
-      ),
+      body: BlocProvider(
+          create: (context) => AddEditContactBloc(),
+          child: BlocBuilder<AddEditContactBloc, AddEditContactState>(
+            builder: (context, state) {
+              return blockProviderChild(context);
+            },
+          )),
     );
+  }
+
+  Widget blockProviderChild(BuildContext context) {
+    AddEditContactState addEditContactState =
+        context.select(((AddEditContactBloc addEditContactBloc) {
+      _addEditContactBloc = addEditContactBloc;
+      return addEditContactBloc.state;
+    }));
+
+    return addEditContactState == ShowLoaderState()
+        ? CircularProgressIndicator()
+        : Padding(
+            padding: const EdgeInsets.all(10),
+            child: Form(
+              key: _form,
+              child: ListView(
+                children: [
+                  CustomTextFormField(
+                      initalValue: contactDataModel?.name ?? "",
+                      label: "Name",
+                      textInputType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        return _isNameValid ? null : "Please enter name";
+                      },
+                      toUpdate: (value) {
+                        contactDataModel?.name = value;
+                      }),
+                  CustomTextFormField(
+                      initalValue: contactDataModel?.name ?? "",
+                      label: "Mobile#",
+                      textInputType: TextInputType.phone,
+                      textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        return _isMobileNumberValid
+                            ? null
+                            : "Please enter mobile number";
+                      },
+                      toUpdate: (value) {
+                        contactDataModel?.mobileNumber = value;
+                      }),
+                  CustomTextFormField(
+                      initalValue: contactDataModel?.name ?? "",
+                      label: "Landline#",
+                      textInputType: TextInputType.phone,
+                      textInputAction: TextInputAction.done,
+                      validator: (value) {
+                        return _isLandlineNumberValid
+                            ? null
+                            : "Please enter landline number";
+                      },
+                      toUpdate: (value) {
+                        contactDataModel?.landlineNumber = value;
+                      }),
+                  SelectAndPreviewImage(
+                      profilePictureSelectCallback: (imagePath) {
+                    profilePictureSelectCallback(imagePath);
+                  }),
+                ],
+              ),
+            ),
+          );
   }
 }

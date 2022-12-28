@@ -1,3 +1,5 @@
+import 'package:path/path.dart';
+
 import '../../../../application/screens/contact_list/bloc/contact_list_bloc.dart';
 import '../../../../application/screens/contact_list/widgets/contact_list_item.dart';
 import '../../add_or_edit_contact/screen/add_edit_contact_screen.dart';
@@ -17,7 +19,6 @@ class ContactListScreen extends StatelessWidget {
         title: const Text("Contact List"),
       ),
       body: BlocProvider(
-        lazy: false,
         create: (_) => ContactListBloc(),
         child: BlocBuilder<ContactListBloc, List<ContactDataModel>>(
           builder: (context, state) {
@@ -39,16 +40,36 @@ class ContactListScreen extends StatelessWidget {
   Widget getListView(BuildContext context) {
     List<ContactDataModel> list = context
         .select((ContactListBloc contactListBloc) => contactListBloc.state);
-    return ListView.builder(
-      itemBuilder: ((context, index) {
-        return ContactListItem(
-            contactDataModel: list[index],
-            onItemClickListener: (selectedContact) {
-              Navigator.of(context).pushNamed(AddEditContactScreen.routeName,
-                  arguments: selectedContact);
-            });
-      }),
-      itemCount: list.length,
-    );
+    return list.isEmpty
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Center(
+                child: Text(
+                  "No Data is available. Please click button to add new contact.",
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed(AddEditContactScreen.routeName);
+                },
+                child: const Text("Add New Contact"),
+              )
+            ],
+          )
+        : ListView.builder(
+            itemBuilder: ((context, index) {
+              return ContactListItem(
+                  contactDataModel: list[index],
+                  onItemClickListener: (selectedContact) {
+                    Navigator.of(context).pushNamed(
+                        AddEditContactScreen.routeName,
+                        arguments: selectedContact);
+                  });
+            }),
+            itemCount: list.length,
+          );
   }
 }
