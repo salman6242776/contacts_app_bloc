@@ -35,13 +35,6 @@ class _SelectAndPreviewImageState extends State<SelectAndPreviewImage> {
   }
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    setImage(widget.imageFilePath);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 40),
