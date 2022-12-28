@@ -5,7 +5,10 @@ import 'package:image_picker/image_picker.dart';
 
 class SelectAndPreviewImage extends StatefulWidget {
   XFile? _imageFile;
-  SelectAndPreviewImage({super.key});
+  final Function profilePictureSelectCallback;
+
+  SelectAndPreviewImage(
+      {super.key, required this.profilePictureSelectCallback});
 
   String? get selectedImagePath {
     return _imageFile?.path;
@@ -17,9 +20,12 @@ class SelectAndPreviewImage extends StatefulWidget {
 
 class _SelectAndPreviewImageState extends State<SelectAndPreviewImage> {
   void setImage(XFile? image) {
-    setState(() {
-      widget._imageFile = image;
-    });
+    if (image != null && image.path.isNotEmpty) {
+      setState(() {
+        widget._imageFile = image;
+      });
+      widget.profilePictureSelectCallback(image.path);
+    }
   }
 
   @override

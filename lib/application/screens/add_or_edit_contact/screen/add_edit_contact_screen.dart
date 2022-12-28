@@ -1,4 +1,6 @@
 import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/widgets/select_and_preview_image.dart';
+import 'package:contact_app_bloc_architecture/common/database_configuration.dart';
+import 'package:contact_app_bloc_architecture/helpers/db_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../../../components/custom_text_form_field.dart';
@@ -10,7 +12,10 @@ class AddEditContactScreen extends StatelessWidget {
   ContactDataModel? contactDataModel;
 
   final _form = GlobalKey<FormState>();
-  final selectAndPreviewImage = SelectAndPreviewImage();
+
+  void profilePictureSelectCallback(String imagePath) {
+    contactDataModel?.profilePicture = imagePath;
+  }
 
   AddEditContactScreen({super.key});
 
@@ -28,11 +33,12 @@ class AddEditContactScreen extends StatelessWidget {
 
   String get _getAppBarTitle => isEdit ? "Edit Contact" : "Add New Contact";
 
-  void onSaveClickListener(BuildContext context) {
+  bool _isViewIsValid(BuildContext context) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     final isValid = _form.currentState?.validate();
     if (isValid == true) {
-      if (selectAndPreviewImage.selectedImagePath != null) {
+      if (contactDataModel?.profilePicture.isNotEmpty == true) {
+        return true;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please select profile picture")),
@@ -43,6 +49,28 @@ class AddEditContactScreen extends StatelessWidget {
         const SnackBar(content: Text("Please fill required details")),
       );
     }
+    return false;
+  }
+
+  void onSaveClickListener(BuildContext context) {
+    if (_isViewIsValid(context)) {
+      DbHelper.insert(
+        TblContactsConfigration.tblName,
+
+        // {TblContactsConfigration.id : } ,
+        {
+          TblContactsConfigration.name: contactDataModel?.name ?? "",
+          TblContactsConfigration.mobileNumber:
+              contactDataModel?.mobileNumber ?? "",
+          TblContactsConfigration.landlineNumber:
+              contactDataModel?.landlineNumber ?? "",
+          TblContactsConfigration.isFavorite:
+              contactDataModel?.isfavorite ?? false,
+          TblContactsConfigration.profilePicture:
+              contactDataModel?.profilePicture ?? ''
+        },
+      );
+    }
   }
 
   @override
@@ -50,6 +78,7 @@ class AddEditContactScreen extends StatelessWidget {
     contactDataModel =
         ModalRoute.of(context)?.settings.arguments as ContactDataModel? ??
             ContactDataModel();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(_getAppBarTitle),
@@ -110,7 +139,9 @@ class AddEditContactScreen extends StatelessWidget {
                   toUpdate: (value) {
                     contactDataModel?.landlineNumber = value;
                   }),
-              selectAndPreviewImage,
+              SelectAndPreviewImage(profilePictureSelectCallback: (imagePath) {
+                profilePictureSelectCallback(imagePath);
+              }),
             ],
           ),
         ),
