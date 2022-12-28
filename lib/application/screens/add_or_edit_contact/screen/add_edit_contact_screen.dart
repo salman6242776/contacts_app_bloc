@@ -1,5 +1,7 @@
-import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
 import 'package:flutter/material.dart';
+
+import '../../../application/components/custom_text_form_field.dart';
+import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
 
 class AddEditContactScreen extends StatelessWidget {
   static const routeName = '/add_edit_contact_screen';
@@ -61,7 +63,7 @@ class AddEditContactScreen extends StatelessWidget {
           key: _form,
           child: ListView(
             children: [
-              getFormTextField(
+              CustomTextFormField(
                   initalValue: contactDataModel?.name ?? "",
                   label: "Name",
                   textInputType: TextInputType.text,
@@ -72,7 +74,7 @@ class AddEditContactScreen extends StatelessWidget {
                   toUpdate: (value) {
                     contactDataModel?.name = value;
                   }),
-              getFormTextField(
+              CustomTextFormField(
                   initalValue: contactDataModel?.name ?? "",
                   label: "Mobile#",
                   textInputType: TextInputType.phone,
@@ -85,7 +87,7 @@ class AddEditContactScreen extends StatelessWidget {
                   toUpdate: (value) {
                     contactDataModel?.mobileNumber = value;
                   }),
-              getFormTextField(
+              CustomTextFormField(
                   initalValue: contactDataModel?.name ?? "",
                   label: "Landline#",
                   textInputType: TextInputType.phone,
@@ -102,28 +104,6 @@ class AddEditContactScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget getFormTextField({
-    required String initalValue,
-    required String label,
-    required TextInputType textInputType,
-    required TextInputAction textInputAction,
-    required Function validator,
-    required Function toUpdate,
-  }) {
-    return TextFormField(
-      initialValue: initalValue, //contactDataModel?.name ?? "",
-      keyboardType: textInputType,
-      decoration: InputDecoration(
-        labelText: label, //"Name",
-      ),
-      textInputAction: textInputAction,
-      validator: (value) => validator(value),
-      onChanged: (value) {
-        toUpdate(value);
-      },
     );
   }
 }

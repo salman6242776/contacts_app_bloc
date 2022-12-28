@@ -1,7 +1,7 @@
-import 'package:contact_app_bloc_architecture/application/add_or_edit_contact/screen/add_edit_contact_screen.dart';
-import 'package:contact_app_bloc_architecture/application/contact_list/bloc/contact_list_bloc.dart';
-import 'package:contact_app_bloc_architecture/application/contact_list/widgets/contact_list_item.dart';
-import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
+import '../../../../application/screens/contact_list/bloc/contact_list_bloc.dart';
+import '../../../../application/screens/contact_list/widgets/contact_list_item.dart';
+import '../../../../application/screens/screen/add_edit_contact_screen.dart';
+import '../../../../data/model/contact_data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
