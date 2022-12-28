@@ -38,6 +38,26 @@ class DbHelper {
     return insert;
   }
 
+  static Future<int> update(
+      {required String tableName,
+      required String where,
+      required List<dynamic> whereArgs,
+      required Map<String, Object> data}) async {
+// returns true when insert is successful
+
+    final sqlDb = await getDatabase();
+    final insert = sqlDb.update(
+      tableName,
+      data,
+      where: where,
+      whereArgs: whereArgs,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+    // insert.then((value) => print('Value inserted: $value'));
+    return insert;
+  }
+
   static Future<List<Map<String, dynamic>>> getData(String table) async {
     final sqlDb = await getDatabase();
     return sqlDb.query(table);

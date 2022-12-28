@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/bloc/add_edit_contact_bloc.dart';
+import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/bloc/crud_contact_bloc.dart';
 import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/widgets/select_and_preview_image.dart';
 import 'package:contact_app_bloc_architecture/common/database_configuration.dart';
 import 'package:contact_app_bloc_architecture/helpers/db_helper.dart';
@@ -10,16 +10,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../components/custom_text_form_field.dart';
 import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
 
-class AddEditContactScreen extends StatefulWidget {
+class CRUDContactScreen extends StatefulWidget {
   static const routeName = '/add_edit_contact_screen';
-  AddEditContactScreen({super.key});
+  CRUDContactScreen({super.key});
 
   @override
-  State<AddEditContactScreen> createState() => _AddEditContactScreenState();
+  State<CRUDContactScreen> createState() => _CRUDContactScreenState();
 }
 
-class _AddEditContactScreenState extends State<AddEditContactScreen> {
-  late AddEditContactBloc _addEditContactBloc;
+class _CRUDContactScreenState extends State<CRUDContactScreen> {
+  late CRUDContactBloc _crudContactBloc;
   late StreamSubscription blocSubscription;
   // = AddEditContactBloc();
   ContactDataModel? contactDataModel;
@@ -28,10 +28,11 @@ class _AddEditContactScreenState extends State<AddEditContactScreen> {
 
   @override
   void initState() {
-    _addEditContactBloc = AddEditContactBloc();
+    _crudContactBloc = CRUDContactBloc();
 
-    blocSubscription = _addEditContactBloc.stream.listen((receivedState) {
-      if (receivedState is CreateCompletedState) {
+    blocSubscription = _crudContactBloc.stream.listen((receivedState) {
+      if (receivedState is CreateCompletedState ||
+          receivedState is UpdateCompletedState) {
         Navigator.of(context).pop();
       }
     });
@@ -41,7 +42,7 @@ class _AddEditContactScreenState extends State<AddEditContactScreen> {
   @override
   void dispose() {
     blocSubscription.cancel();
-    _addEditContactBloc.close();
+    _crudContactBloc.close();
     super.dispose();
   }
 
@@ -85,7 +86,11 @@ class _AddEditContactScreenState extends State<AddEditContactScreen> {
 
   void onSaveClickListener(BuildContext context) {
     if (_isViewIsValid(context)) {
-      _addEditContactBloc.add(CreateUserEvent(contactDataModel!));
+      if (contactDataModel?.id != null) {
+        _crudContactBloc.add(UpdateContactEvent(contactDataModel!));
+      } else {
+        _crudContactBloc.add(CreateContactEvent(contactDataModel!));
+      }
     }
   }
 
@@ -94,6 +99,9 @@ class _AddEditContactScreenState extends State<AddEditContactScreen> {
     contactDataModel =
         ModalRoute.of(context)?.settings.arguments as ContactDataModel? ??
             ContactDataModel();
+    if (contactDataModel?.id != null) {
+      print("----------------------EDIT-----------------");
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -113,7 +121,7 @@ class _AddEditContactScreenState extends State<AddEditContactScreen> {
           ],
         ),
         body: BlocBuilder(
-          bloc: _addEditContactBloc,
+          bloc: _crudContactBloc,
           builder: (context, state) {
             return blockProviderChild(context);
           },
@@ -139,7 +147,7 @@ class _AddEditContactScreenState extends State<AddEditContactScreen> {
     //   Navigator.of(context).pop();
     // }
 
-    return _addEditContactBloc.state == ShowLoaderState()
+    return _crudContactBloc.state == ShowLoaderState()
         ? CircularProgressIndicator()
         : Padding(
             padding: const EdgeInsets.all(10),
@@ -159,7 +167,7 @@ class _AddEditContactScreenState extends State<AddEditContactScreen> {
                         contactDataModel?.name = value;
                       }),
                   CustomTextFormField(
-                      initalValue: contactDataModel?.name ?? "",
+                      initalValue: contactDataModel?.mobileNumber ?? "",
                       label: "Mobile#",
                       textInputType: TextInputType.phone,
                       textInputAction: TextInputAction.next,
@@ -172,7 +180,7 @@ class _AddEditContactScreenState extends State<AddEditContactScreen> {
                         contactDataModel?.mobileNumber = value;
                       }),
                   CustomTextFormField(
-                      initalValue: contactDataModel?.name ?? "",
+                      initalValue: contactDataModel?.landlineNumber ?? "",
                       label: "Landline#",
                       textInputType: TextInputType.phone,
                       textInputAction: TextInputAction.done,

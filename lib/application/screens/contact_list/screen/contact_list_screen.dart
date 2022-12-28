@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../application/screens/contact_list/bloc/contact_list_bloc.dart';
 import '../../../../application/screens/contact_list/widgets/contact_list_item.dart';
-import '../../add_or_edit_contact/screen/add_edit_contact_screen.dart';
+import '../../add_or_edit_contact/screen/crud_contact_screen.dart';
 
 // import '../link_screen_and_block.dart';
 
@@ -53,7 +53,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context)
-              .pushNamed(AddEditContactScreen.routeName)
+              .pushNamed(CRUDContactScreen.routeName)
               .then((value) => _getAllContacts());
         },
         child: const Icon(Icons.add),
@@ -75,7 +75,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
               TextButton(
                 onPressed: () {
                   Navigator.of(context)
-                      .pushNamed(AddEditContactScreen.routeName)
+                      .pushNamed(CRUDContactScreen.routeName)
                       .then((value) => _getAllContacts());
                 },
                 child: const Text("Add New Contact"),
@@ -88,7 +88,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
                   contactDataModel: _contactListBloc.state[index],
                   onItemClickListener: (selectedContact) {
                     Navigator.of(context)
-                        .pushNamed(AddEditContactScreen.routeName,
+                        .pushNamed(CRUDContactScreen.routeName,
                             arguments: selectedContact)
                         .then((value) => _getAllContacts());
                   });

@@ -53,7 +53,19 @@ class Repository {
   // Future<bool> DeleteContact(int id) async{
 
   // }
-  // Future<bool> EditContact(ContactDataModel contactDataModel) async{
 
-  // }
+  Future<int> editContact(ContactDataModel contactDataModel) async {
+    return DbHelper.update(
+      tableName: TblContactsConfigration.tblName,
+      where: '${TblContactsConfigration.id} = ?',
+      whereArgs: [contactDataModel.id],
+      data: {
+        TblContactsConfigration.name: contactDataModel.name,
+        TblContactsConfigration.mobileNumber: contactDataModel.mobileNumber,
+        TblContactsConfigration.landlineNumber: contactDataModel.landlineNumber,
+        TblContactsConfigration.isFavorite: contactDataModel.isfavorite,
+        TblContactsConfigration.profilePicture: contactDataModel.profilePicture
+      },
+    );
+  }
 }
