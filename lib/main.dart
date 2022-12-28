@@ -1,3 +1,4 @@
+import 'package:contact_app_bloc_architecture/application/add_or_edit_contact/screen/add_edit_contact_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'application/contact_list/screen/contact_list_screen.dart';
@@ -8,18 +9,18 @@ import 'package:contact_app_bloc_architecture/helpers/db_helper.dart';
 void main() {
   runApp(const MyApp());
 
-  DbHelper.insert(
-    TblContactsConfigration.tblName,
+  // DbHelper.insert(
+  //   TblContactsConfigration.tblName,
 
-    // {TblContactsConfigration.id : } ,
-    {
-      TblContactsConfigration.name: "Salman",
-      TblContactsConfigration.mobileNumber: "11111111",
-      TblContactsConfigration.landlineNumber: "123456",
-      TblContactsConfigration.isFavorite: 0,
-      TblContactsConfigration.profilePicture: ''
-    },
-  );
+  //   // {TblContactsConfigration.id : } ,
+  //   {
+  //     TblContactsConfigration.name: "Salman",
+  //     TblContactsConfigration.mobileNumber: "11111111",
+  //     TblContactsConfigration.landlineNumber: "123456",
+  //     TblContactsConfigration.isFavorite: 0,
+  //     TblContactsConfigration.profilePicture: ''
+  //   },
+  // );
 }
 // void main() => runApp(const MyApp());
 
@@ -34,10 +35,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const ContactListScreen(),
-      // routes: {
-      //   '/': (ctx) => const ContactListScreen(),
-      // },
+      // home: const ContactListScreen(),
+      routes: {
+        '/': (_) => const ContactListScreen(),
+        AddEditContactScreen.routeName: (_) => AddEditContactScreen()
+      },
     );
   }
 }

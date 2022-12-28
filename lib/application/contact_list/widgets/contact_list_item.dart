@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 
 class ContactListItem extends StatelessWidget {
   final ContactDataModel contactDataModel;
-  const ContactListItem({super.key, required this.contactDataModel});
+  final Function onItemClickListener;
+  const ContactListItem(
+      {super.key,
+      required this.contactDataModel,
+      required this.onItemClickListener});
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +20,10 @@ class ContactListItem extends StatelessWidget {
         title: Text(contactDataModel.name),
         subtitle: Text(contactDataModel.mobileNumber),
         onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('clicked: ${contactDataModel.name}')),
-          );
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(content: Text('clicked: ${contactDataModel.name}')),
+          // );
+          onItemClickListener(contactDataModel);
         },
       ),
     );
