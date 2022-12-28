@@ -4,28 +4,41 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SelectAndPreviewImage extends StatefulWidget {
-  XFile? _imageFile;
+  String? imageFilePath;
   final Function profilePictureSelectCallback;
 
   SelectAndPreviewImage(
-      {super.key, required this.profilePictureSelectCallback});
+      {super.key,
+      this.imageFilePath,
+      required this.profilePictureSelectCallback});
 
   String? get selectedImagePath {
-    return _imageFile?.path;
+    return imageFilePath;
   }
+
+  // void setImagePath(String path) {
+  //   imageFilePath = path;
+  // }
 
   @override
   State<SelectAndPreviewImage> createState() => _SelectAndPreviewImageState();
 }
 
 class _SelectAndPreviewImageState extends State<SelectAndPreviewImage> {
-  void setImage(XFile? image) {
-    if (image != null && image.path.isNotEmpty) {
+  void setImage(String? image) {
+    if (image != null && image.isNotEmpty) {
       setState(() {
-        widget._imageFile = image;
+        widget.imageFilePath = image;
       });
-      widget.profilePictureSelectCallback(image.path);
+      widget.profilePictureSelectCallback(image);
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setImage(widget.imageFilePath);
   }
 
   @override
@@ -50,9 +63,9 @@ class _SelectAndPreviewImageState extends State<SelectAndPreviewImage> {
               //   fit: BoxFit.cover,
               // ),
             ),
-            child: widget._imageFile != null
+            child: widget.imageFilePath != null
                 ? Image.file(
-                    File(widget._imageFile?.path ?? ""),
+                    File(widget.imageFilePath ?? ""),
                     fit: BoxFit.cover,
                   )
                 : const Text(
@@ -64,7 +77,7 @@ class _SelectAndPreviewImageState extends State<SelectAndPreviewImage> {
             onPressed: () async {
               await ImagePicker()
                   .pickImage(source: ImageSource.gallery)
-                  .then((value) => setImage(value));
+                  .then((value) => setImage(value?.path));
             },
             child: const Text("Select Image"),
           ),

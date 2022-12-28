@@ -185,9 +185,10 @@ class _AddEditContactScreenState extends State<AddEditContactScreen> {
                         contactDataModel?.landlineNumber = value;
                       }),
                   SelectAndPreviewImage(
+                      imageFilePath: contactDataModel?.profilePicture,
                       profilePictureSelectCallback: (imagePath) {
-                    profilePictureSelectCallback(imagePath);
-                  }),
+                        profilePictureSelectCallback(imagePath);
+                      }),
                 ],
               ),
             ),
