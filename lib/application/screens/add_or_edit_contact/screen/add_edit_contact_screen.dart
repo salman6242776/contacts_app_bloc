@@ -1,13 +1,16 @@
+import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/widgets/select_and_preview_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../../application/components/custom_text_form_field.dart';
+import '../../../components/custom_text_form_field.dart';
 import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
 
 class AddEditContactScreen extends StatelessWidget {
   static const routeName = '/add_edit_contact_screen';
 
   ContactDataModel? contactDataModel;
+
   final _form = GlobalKey<FormState>();
+  final selectAndPreviewImage = SelectAndPreviewImage();
 
   AddEditContactScreen({super.key});
 
@@ -28,6 +31,12 @@ class AddEditContactScreen extends StatelessWidget {
   void onSaveClickListener(BuildContext context) {
     final isValid = _form.currentState?.validate();
     if (isValid == true) {
+      if (selectAndPreviewImage.selectedImagePath != null) {
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please select profile picture")),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please fill required details")),
@@ -100,6 +109,7 @@ class AddEditContactScreen extends StatelessWidget {
                   toUpdate: (value) {
                     contactDataModel?.landlineNumber = value;
                   }),
+              selectAndPreviewImage,
             ],
           ),
         ),

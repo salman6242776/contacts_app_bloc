@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import './application/screens/contact_list/screen/contact_list_screen.dart';
-import './application/screens/screen/add_edit_contact_screen.dart';
+import 'application/screens/add_or_edit_contact/screen/add_edit_contact_screen.dart';
 // import './application/contact_list/link_screen_and_block.dart';
 import 'package:contact_app_bloc_architecture/common/database_configuration.dart';
 import 'package:contact_app_bloc_architecture/helpers/db_helper.dart';
