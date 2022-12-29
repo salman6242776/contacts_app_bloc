@@ -21,15 +21,19 @@ class FavoriteScreen extends StatelessWidget {
               if (state is FetchFavoriteStarted) {
                 return const CircularProgressIndicator();
               } else {
-                return ListView.builder(
-                  itemBuilder: ((context, index) {
-                    return ContactListItem(
-                        contactDataModel:
-                            state.props[index] as ContactDataModel,
-                        onItemClickListener: () {});
-                  }),
-                  itemCount: state.props.length,
-                );
+                return state.props.isEmpty
+                    ? const Center(
+                        child: Text("No Favorites!"),
+                      )
+                    : ListView.builder(
+                        itemBuilder: ((context, index) {
+                          return ContactListItem(
+                              contactDataModel:
+                                  state.props[index] as ContactDataModel,
+                              onItemClickListener: () {});
+                        }),
+                        itemCount: state.props.length,
+                      );
               }
             },
           )),
