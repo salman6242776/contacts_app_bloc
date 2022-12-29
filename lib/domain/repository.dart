@@ -22,7 +22,8 @@ class Repository {
   //   ];
   // }
   Future<List<ContactDataModel>> getAllContacts() async {
-    final map = await DbHelper.getData(TblContactsConfigration.tblName);
+    final map = await DbHelper.getData(TblContactsConfigration.tblName,
+        orderBy: '${TblContactsConfigration.name} ASC');
     return map
         .map((e) => ContactDataModel(
               id: e[TblContactsConfigration.id],

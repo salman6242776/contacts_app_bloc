@@ -71,8 +71,9 @@ class DbHelper {
     return insert;
   }
 
-  static Future<List<Map<String, dynamic>>> getData(String table) async {
+  static Future<List<Map<String, dynamic>>> getData(String table,
+      {String? orderBy}) async {
     final sqlDb = await _getDatabase();
-    return sqlDb.query(table);
+    return sqlDb.query(table, orderBy: orderBy);
   }
 }
