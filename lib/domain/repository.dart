@@ -68,4 +68,12 @@ class Repository {
       },
     );
   }
+
+  Future<int> deleteContact(ContactDataModel contactDataModel) async {
+    return DbHelper.delete(
+      tableName: TblContactsConfigration.tblName,
+      where: '${TblContactsConfigration.id} = ?',
+      whereArgs: [contactDataModel.id],
+    );
+  }
 }

@@ -32,7 +32,8 @@ class _CRUDContactScreenState extends State<CRUDContactScreen> {
 
     blocSubscription = _crudContactBloc.stream.listen((receivedState) {
       if (receivedState is CreateCompletedState ||
-          receivedState is UpdateCompletedState) {
+          receivedState is UpdateCompletedState ||
+          receivedState is DeleteCompletedState) {
         Navigator.of(context).pop();
       }
     });
@@ -94,6 +95,16 @@ class _CRUDContactScreenState extends State<CRUDContactScreen> {
     }
   }
 
+  void onDeleteClickListener(BuildContext context) {
+    if (contactDataModel?.id != null) {
+      _crudContactBloc.add(DeleteContactEvent(contactDataModel!));
+    } else {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("No User found!")));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     contactDataModel =
@@ -115,7 +126,9 @@ class _CRUDContactScreenState extends State<CRUDContactScreen> {
             ),
             if (isEdit)
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  onDeleteClickListener(context);
+                },
                 icon: const Icon(Icons.delete),
               ),
           ],

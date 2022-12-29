@@ -12,12 +12,13 @@ class CRUDContactBloc extends Bloc<CRUDContactEvent, CRUDContactState> {
 // constructor
   CRUDContactBloc() : super(CRUDContactInitialState()) {
     _repository = Repository();
-    on<CreateContactEvent>(createContact);
-    on<UpdateContactEvent>(updateContact);
+    on<CreateContactEvent>(_createContact);
+    on<UpdateContactEvent>(_updateContact);
+    on<DeleteContactEvent>(_deleteContact);
   }
 
   // bind events with states
-  void createContact(CreateContactEvent createUserEvent,
+  void _createContact(CreateContactEvent createUserEvent,
       Emitter<CRUDContactState> emit) async {
     emit(ShowLoaderState());
     await _repository
@@ -27,11 +28,19 @@ class CRUDContactBloc extends Bloc<CRUDContactEvent, CRUDContactState> {
             });
   }
 
-  void updateContact(UpdateContactEvent updateUserEvent,
+  void _updateContact(UpdateContactEvent updateUserEvent,
       Emitter<CRUDContactState> emit) async {
     emit(ShowLoaderState());
     await _repository
         .editContact(updateUserEvent.contactDataModel)
         .then((value) => emit(UpdateCompletedState(value)));
+  }
+
+  void _deleteContact(DeleteContactEvent deleteContactEvent,
+      Emitter<CRUDContactState> emit) async {
+    emit(ShowLoaderState());
+    await _repository
+        .deleteContact(deleteContactEvent.contactDataModel)
+        .then((value) => emit(DeleteCompletedState(value)));
   }
 }

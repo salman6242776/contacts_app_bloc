@@ -11,7 +11,10 @@ class CRUDContactInitialState extends CRUDContactState {}
 
 class ShowLoaderState extends CRUDContactState {}
 
-class DeleteCompletedState extends CRUDContactState {}
+class DeleteCompletedState extends CRUDContactState {
+  final int isSuccessful;
+  const DeleteCompletedState(this.isSuccessful);
+}
 
 class UpdateCompletedState extends CRUDContactState {
   final int isSuccessful;

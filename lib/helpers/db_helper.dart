@@ -43,7 +43,7 @@ class DbHelper {
       required String where,
       required List<dynamic> whereArgs,
       required Map<String, Object> data}) async {
-// returns true when insert is successful
+// returns true when update is successful
 
     final sqlDb = await getDatabase();
     final insert = sqlDb.update(
@@ -53,8 +53,21 @@ class DbHelper {
       whereArgs: whereArgs,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    return insert;
+  }
 
-    // insert.then((value) => print('Value inserted: $value'));
+  static Future<int> delete(
+      {required String tableName,
+      required String where,
+      required List<dynamic> whereArgs}) async {
+// returns true when delete is successful
+
+    final sqlDb = await getDatabase();
+    final insert = sqlDb.delete(
+      tableName,
+      where: where,
+      whereArgs: whereArgs,
+    );
     return insert;
   }
 
