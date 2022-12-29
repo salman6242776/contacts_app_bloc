@@ -21,9 +21,16 @@ class Repository {
   //     ),
   //   ];
   // }
-  Future<List<ContactDataModel>> getAllContacts() async {
-    final map = await DbHelper.getData(TblContactsConfigration.tblName,
-        orderBy: '${TblContactsConfigration.name} ASC');
+  Future<List<ContactDataModel>> getAllContacts({
+    String? where,
+    List<Object>? whereArgs,
+  }) async {
+    final map = await DbHelper.getData(
+      TblContactsConfigration.tblName,
+      orderBy: '${TblContactsConfigration.name} ASC',
+      where: where,
+      whereArgs: whereArgs,
+    );
     return map
         .map((e) => ContactDataModel(
               id: e[TblContactsConfigration.id],
@@ -35,6 +42,13 @@ class Repository {
                   e[TblContactsConfigration.isFavorite] == 0 ? false : true,
             ))
         .toList();
+  }
+
+  Future<List<ContactDataModel>> getFavoriteContacts() {
+    return getAllContacts(
+      where: '${TblContactsConfigration.isFavorite} = ?',
+      whereArgs: [1],
+    );
   }
 
   // Future<ContactDataModel> getContactById(int id) async {

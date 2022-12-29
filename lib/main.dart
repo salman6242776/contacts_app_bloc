@@ -1,5 +1,6 @@
 import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/bloc/crud_contact_bloc.dart';
 import 'package:contact_app_bloc_architecture/application/screens/contact_list/bloc/contact_list_bloc.dart';
+import 'package:contact_app_bloc_architecture/application/screens/favorite/screen/favorite_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,7 +37,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme:
+            ColorScheme.fromSwatch(primarySwatch: Colors.purple).copyWith(
+          secondary: Colors.orange,
+        ),
       ),
       home: MultiBlocProvider(
         providers: [
@@ -49,10 +53,9 @@ class MyApp extends StatelessWidget {
         ],
         child: const ContactListScreen(),
       ),
-      // home: const ContactListScreen(),
       routes: {
-        // '/': (_) => ContactListScreen(),
-        CRUDContactScreen.routeName: (_) => CRUDContactScreen()
+        CRUDContactScreen.routeName: (_) => CRUDContactScreen(),
+        FavoriteScreen.routeName: (_) => FavoriteScreen()
       },
     );
   }
