@@ -35,6 +35,10 @@ class _CRUDContactScreenState extends State<CRUDContactScreen> {
           receivedState is UpdateCompletedState ||
           receivedState is DeleteCompletedState) {
         Navigator.of(context).pop();
+      } else if (receivedState is ToggleFavoriteContactCompletedState) {
+        contactDataModel?.isFavorite = !(contactDataModel?.isFavorite ?? true);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //     const SnackBar(content: Text("Favorite toggle successfully")));
       }
     });
     super.initState();
@@ -105,6 +109,16 @@ class _CRUDContactScreenState extends State<CRUDContactScreen> {
     }
   }
 
+  void toggleFavoriteOnClickListener(BuildContext context) {
+    if (contactDataModel?.id != null) {
+      _crudContactBloc.add(ToggleFavoriteContactEvent(contactDataModel!));
+    } else {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("No User found!")));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     contactDataModel =
@@ -131,21 +145,33 @@ class _CRUDContactScreenState extends State<CRUDContactScreen> {
                 },
                 icon: const Icon(Icons.delete),
               ),
+            if (isEdit)
+              BlocBuilder(
+                bloc: _crudContactBloc,
+                builder: (context, state) {
+                  print("CRUDContactScreen Builder called");
+                  return IconButton(
+                      onPressed: () {
+                        toggleFavoriteOnClickListener(context);
+                      },
+                      icon: Icon(isEdit && contactDataModel?.isFavorite == true
+                          ? Icons.star
+                          : Icons.star_border));
+                },
+                buildWhen: (previous, current) =>
+                    previous.runtimeType != current.runtimeType,
+              ),
           ],
         ),
-        body: BlocBuilder(
-          bloc: _crudContactBloc,
-          builder: (context, state) {
-            return blockProviderChild(context);
-          },
-        )
-        // BlocProvider(
-        //     create: (context) => AddEditContactBloc(),
-        //     child: BlocBuilder<AddEditContactBloc, AddEditContactState>(
-        //       builder: (context, state) {
-        //         return blockProviderChild(context);
-        //       },
-        //     )),
+        body:
+            //  BlocBuilder(
+            //   bloc: _crudContactBloc,
+            //   builder: (context, state) {
+            //     print("CRUDContactScreen Builder called");
+            //     return
+            blockProviderChild(context) //;
+        //   },
+        // ),
         );
   }
 
@@ -161,7 +187,7 @@ class _CRUDContactScreenState extends State<CRUDContactScreen> {
     // }
 
     return _crudContactBloc.state == ShowLoaderState()
-        ? CircularProgressIndicator()
+        ? const CircularProgressIndicator()
         : Padding(
             padding: const EdgeInsets.all(10),
             child: Form(

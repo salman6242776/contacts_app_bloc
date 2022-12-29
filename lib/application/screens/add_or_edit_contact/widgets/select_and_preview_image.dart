@@ -56,14 +56,16 @@ class _SelectAndPreviewImageState extends State<SelectAndPreviewImage> {
               //   fit: BoxFit.cover,
               // ),
             ),
-            child: widget.imageFilePath != null
+            child: widget.imageFilePath?.isNotEmpty == true
                 ? Image.file(
                     File(widget.imageFilePath ?? ""),
                     fit: BoxFit.cover,
                   )
-                : const Text(
-                    "Image",
-                    textAlign: TextAlign.center,
+                : const Center(
+                    child: Text(
+                      "Image",
+                      textAlign: TextAlign.center,
+                    ),
                   ),
           ),
           TextButton(

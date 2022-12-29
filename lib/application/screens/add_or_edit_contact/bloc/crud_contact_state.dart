@@ -25,3 +25,8 @@ class CreateCompletedState extends CRUDContactState {
   final int isSuccessful;
   const CreateCompletedState(this.isSuccessful);
 }
+
+class ToggleFavoriteContactCompletedState extends CRUDContactState {
+  final int isSuccessful;
+  const ToggleFavoriteContactCompletedState(this.isSuccessful);
+}

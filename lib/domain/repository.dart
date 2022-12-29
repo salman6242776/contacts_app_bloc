@@ -30,6 +30,8 @@ class Repository {
               mobileNumber: e[TblContactsConfigration.mobileNumber],
               landlineNumber: e[TblContactsConfigration.landlineNumber],
               profilePicture: e[TblContactsConfigration.profilePicture],
+              isFavorite:
+                  e[TblContactsConfigration.isFavorite] == 0 ? false : true,
             ))
         .toList();
   }
@@ -45,7 +47,7 @@ class Repository {
         TblContactsConfigration.name: contactDataModel.name,
         TblContactsConfigration.mobileNumber: contactDataModel.mobileNumber,
         TblContactsConfigration.landlineNumber: contactDataModel.landlineNumber,
-        TblContactsConfigration.isFavorite: contactDataModel.isfavorite,
+        TblContactsConfigration.isFavorite: contactDataModel.isFavorite,
         TblContactsConfigration.profilePicture: contactDataModel.profilePicture
       },
     );
@@ -63,8 +65,21 @@ class Repository {
         TblContactsConfigration.name: contactDataModel.name,
         TblContactsConfigration.mobileNumber: contactDataModel.mobileNumber,
         TblContactsConfigration.landlineNumber: contactDataModel.landlineNumber,
-        TblContactsConfigration.isFavorite: contactDataModel.isfavorite,
+        TblContactsConfigration.isFavorite: contactDataModel.isFavorite,
         TblContactsConfigration.profilePicture: contactDataModel.profilePicture
+      },
+    );
+  }
+
+  Future<int> toggleFavorite(
+      ContactDataModel contactDataModel, int newToggleValue) async {
+    return DbHelper.update(
+      tableName: TblContactsConfigration.tblName,
+      where: '${TblContactsConfigration.id} = ?',
+      whereArgs: [contactDataModel.id],
+      data: {
+        TblContactsConfigration.isFavorite:
+            newToggleValue, // used toggle value here to update favorite only!
       },
     );
   }

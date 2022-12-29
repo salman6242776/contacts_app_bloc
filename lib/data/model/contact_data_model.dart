@@ -3,7 +3,7 @@ class ContactDataModel {
   String name;
   String mobileNumber;
   String landlineNumber;
-  bool isfavorite;
+  bool isFavorite;
 
   String profilePicture;
 
@@ -12,7 +12,7 @@ class ContactDataModel {
     this.name = "",
     this.mobileNumber = "",
     this.landlineNumber = "",
-    this.isfavorite = false,
+    this.isFavorite = false,
     this.profilePicture = "",
   });
 }

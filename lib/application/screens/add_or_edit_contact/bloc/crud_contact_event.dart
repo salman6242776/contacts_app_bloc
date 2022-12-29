@@ -22,3 +22,10 @@ class DeleteContactEvent extends CRUDContactEvent {
   const DeleteContactEvent(ContactDataModel contactDataModel)
       : super(contactDataModel);
 }
+
+class ToggleFavoriteContactEvent extends CRUDContactEvent {
+  // final bool newToggleValue;
+  const ToggleFavoriteContactEvent(
+      ContactDataModel contactDataModel /*, this.newToggleValue*/)
+      : super(contactDataModel);
+}
