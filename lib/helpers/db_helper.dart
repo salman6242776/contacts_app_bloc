@@ -16,7 +16,7 @@ class DbHelper {
       ' ${TblContactsConfigration.profilePicture} TEXT'
       ' )';
 
-  static Future<Database> getDatabase() async {
+  static Future<Database> _getDatabase() async {
     final dbPath = await getDatabasesPath();
     return await openDatabase(join(dbPath, Constants.databaseName),
         onCreate: (db, version) {
@@ -27,7 +27,7 @@ class DbHelper {
   static Future<int> insert(String tableName, Map<String, Object> data) async {
 // returns true when insert is successful
 
-    final sqlDb = await getDatabase();
+    final sqlDb = await _getDatabase();
     final insert = sqlDb.insert(
       tableName,
       data,
@@ -45,7 +45,7 @@ class DbHelper {
       required Map<String, Object> data}) async {
 // returns true when update is successful
 
-    final sqlDb = await getDatabase();
+    final sqlDb = await _getDatabase();
     final insert = sqlDb.update(
       tableName,
       data,
@@ -62,7 +62,7 @@ class DbHelper {
       required List<dynamic> whereArgs}) async {
 // returns true when delete is successful
 
-    final sqlDb = await getDatabase();
+    final sqlDb = await _getDatabase();
     final insert = sqlDb.delete(
       tableName,
       where: where,
@@ -72,7 +72,7 @@ class DbHelper {
   }
 
   static Future<List<Map<String, dynamic>>> getData(String table) async {
-    final sqlDb = await getDatabase();
+    final sqlDb = await _getDatabase();
     return sqlDb.query(table);
   }
 }
