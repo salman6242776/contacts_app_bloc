@@ -6,9 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './application/screens/contact_list/screen/contact_list_screen.dart';
 import 'application/screens/add_or_edit_contact/screen/crud_contact_screen.dart';
-// import './application/contact_list/link_screen_and_block.dart';
-import 'package:contact_app_bloc_architecture/common/database_configuration.dart';
-import 'package:contact_app_bloc_architecture/helpers/db_helper.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,9 +34,22 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme:
-            ColorScheme.fromSwatch(primarySwatch: Colors.purple).copyWith(
-          secondary: Colors.orange,
+        fontFamily: "Raleway",
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
+            .copyWith(secondary: Colors.orange),
+        appBarTheme: const AppBarTheme(
+          titleTextStyle: TextStyle(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        drawerTheme: const DrawerThemeData(elevation: 100),
+        textTheme: const TextTheme(
+          // title medium for list item tile.
+          titleMedium: TextStyle(
+            fontSize: 16,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       home: MultiBlocProvider(

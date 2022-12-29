@@ -26,7 +26,7 @@ class AppDrawer extends Drawer {
         _getListTileSlab(
             context: context,
             iconData: Icons.favorite,
-            title: "Favorite Contactst",
+            title: "Favorite Contacts",
             onTapClickListener: () {
               Navigator.of(context).pop();
               Navigator.of(context).pushNamed(FavoriteScreen.routeName);
