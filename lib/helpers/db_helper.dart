@@ -1,33 +1,42 @@
-import 'package:contact_app_bloc_architecture/common/constants.dart';
-import 'package:contact_app_bloc_architecture/common/database_configuration.dart';
 import 'package:sqflite/sqflite.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
+// import 'package:contact_app_bloc_architecture/common/constants.dart';
+// import 'package:contact_app_bloc_architecture/common/database_configuration.dart';
 
 class DbHelper {
   // ignore: prefer_interpolation_to_compose_strings
-  static const _createTableQuery =
-      'CREATE TABLE ${TblContactsConfigration.tblName} ('
-      ' ${TblContactsConfigration.id} INTEGER PRIMARY KEY AUTOINCREMENT,'
-      ' ${TblContactsConfigration.name} TEXT NOT NULL,'
-      ' ${TblContactsConfigration.mobileNumber} TEXT,'
-      ' ${TblContactsConfigration.landlineNumber} TEXT,'
-      ' ${TblContactsConfigration.isFavorite} INTEGER NOT NULL,'
-      ' ${TblContactsConfigration.profilePicture} TEXT'
-      ' )';
+  // static const _createTableQuery =
+  //     'CREATE TABLE ${TblContactsConfigration.tblName} ('
+  //     ' ${TblContactsConfigration.id} INTEGER PRIMARY KEY AUTOINCREMENT,'
+  //     ' ${TblContactsConfigration.name} TEXT NOT NULL,'
+  //     ' ${TblContactsConfigration.mobileNumber} TEXT,'
+  //     ' ${TblContactsConfigration.landlineNumber} TEXT,'
+  //     ' ${TblContactsConfigration.isFavorite} INTEGER NOT NULL,'
+  //     ' ${TblContactsConfigration.profilePicture} TEXT'
+  //     ' )';
 
-  static Future<Database> _getDatabase() async {
+  // static Future<Database> _getDatabase() async {
+  //   final dbPath = await getDatabasesPath();
+  //   return await openDatabase(join(dbPath, Constants.databaseName),
+  //       onCreate: (db, version) {
+  //     return db.execute(_createTableQuery);
+  //   }, version: 1);
+  // }
+
+  static Future<Database> getDatabase(
+      String databaseName, String createTableQuery) async {
     final dbPath = await getDatabasesPath();
-    return await openDatabase(join(dbPath, Constants.databaseName),
+    return await openDatabase(join(dbPath, databaseName),
         onCreate: (db, version) {
-      return db.execute(_createTableQuery);
+      return db.execute(createTableQuery);
     }, version: 1);
   }
 
-  static Future<int> insert(String tableName, Map<String, Object> data) async {
+  static Future<int> insert(
+      Database sqlDb, String tableName, Map<String, Object> data) async {
 // returns true when insert is successful
 
-    final sqlDb = await _getDatabase();
     final insert = sqlDb.insert(
       tableName,
       data,
@@ -39,13 +48,12 @@ class DbHelper {
   }
 
   static Future<int> update(
-      {required String tableName,
+      {required Database sqlDb,
+      required String tableName,
       required String where,
       required List<dynamic> whereArgs,
       required Map<String, Object> data}) async {
 // returns true when update is successful
-
-    final sqlDb = await _getDatabase();
     final insert = sqlDb.update(
       tableName,
       data,
@@ -57,12 +65,12 @@ class DbHelper {
   }
 
   static Future<int> delete(
-      {required String tableName,
+      {required Database sqlDb,
+      required String tableName,
       required String where,
       required List<dynamic> whereArgs}) async {
 // returns true when delete is successful
 
-    final sqlDb = await _getDatabase();
     final insert = sqlDb.delete(
       tableName,
       where: where,
@@ -71,9 +79,9 @@ class DbHelper {
     return insert;
   }
 
-  static Future<List<Map<String, dynamic>>> getData(String table,
+  static Future<List<Map<String, dynamic>>> getData(
+      Database sqlDb, String table,
       {String? orderBy, String? where, List<Object>? whereArgs}) async {
-    final sqlDb = await _getDatabase();
     return sqlDb.query(table,
         orderBy: orderBy, where: where, whereArgs: whereArgs);
   }

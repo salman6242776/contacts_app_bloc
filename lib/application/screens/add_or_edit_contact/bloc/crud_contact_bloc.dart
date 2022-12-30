@@ -1,18 +1,19 @@
 import 'package:bloc/bloc.dart';
+import 'package:contact_app_bloc_architecture/domain/service/contact_repository_service.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
-import 'package:contact_app_bloc_architecture/domain/repository.dart';
+import 'package:contact_app_bloc_architecture/domain/contact_repository.dart';
 
 part 'crud_contact_event.dart';
 part 'crud_contact_state.dart';
 
 class CRUDContactBloc extends Bloc<CRUDContactEvent, CRUDContactState> {
-  late Repository _repository;
+  late ContactRepositoryService _contactRepositoryService;
 
 // constructor
   CRUDContactBloc() : super(CRUDContactInitialState()) {
-    _repository = Repository();
+    _contactRepositoryService = ContactRepositoryService.getInstance();
     on<CreateContactEvent>(_createContact);
     on<UpdateContactEvent>(_updateContact);
     on<DeleteContactEvent>(_deleteContact);
@@ -23,7 +24,7 @@ class CRUDContactBloc extends Bloc<CRUDContactEvent, CRUDContactState> {
   void _createContact(CreateContactEvent createUserEvent,
       Emitter<CRUDContactState> emit) async {
     emit(ShowLoaderState());
-    await _repository
+    await _contactRepositoryService
         .addContact(createUserEvent.contactDataModel)
         .then((value) => {
               emit(CreateCompletedState(value)),
@@ -33,7 +34,7 @@ class CRUDContactBloc extends Bloc<CRUDContactEvent, CRUDContactState> {
   void _updateContact(UpdateContactEvent updateUserEvent,
       Emitter<CRUDContactState> emit) async {
     emit(ShowLoaderState());
-    await _repository
+    await _contactRepositoryService
         .editContact(updateUserEvent.contactDataModel)
         .then((value) => emit(UpdateCompletedState(value)));
   }
@@ -43,7 +44,7 @@ class CRUDContactBloc extends Bloc<CRUDContactEvent, CRUDContactState> {
     emit(ShowLoaderState());
     final newValue =
         toggleFavoriteContactEvent.contactDataModel.isFavorite ? 0 : 1;
-    await _repository
+    await _contactRepositoryService
         .toggleFavorite(toggleFavoriteContactEvent.contactDataModel, newValue)
         .then((value) => emit(ToggleFavoriteContactCompletedState(value)));
   }
@@ -51,7 +52,7 @@ class CRUDContactBloc extends Bloc<CRUDContactEvent, CRUDContactState> {
   void _deleteContact(DeleteContactEvent deleteContactEvent,
       Emitter<CRUDContactState> emit) async {
     emit(ShowLoaderState());
-    await _repository
+    await _contactRepositoryService
         .deleteContact(deleteContactEvent.contactDataModel)
         .then((value) => emit(DeleteCompletedState(value)));
   }
