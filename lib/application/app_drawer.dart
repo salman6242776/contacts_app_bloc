@@ -1,4 +1,4 @@
-import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/screen/crud_contact_screen.dart';
+import 'package:contact_app_bloc_architecture/application/screens/crud_contact/screen/crud_contact_screen.dart';
 import 'package:contact_app_bloc_architecture/application/screens/favorite/screen/favorite_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';

@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/bloc/crud_contact_bloc.dart';
-import 'package:contact_app_bloc_architecture/application/screens/add_or_edit_contact/widgets/select_and_preview_image.dart';
-import 'package:contact_app_bloc_architecture/common/database_configuration.dart';
-import 'package:contact_app_bloc_architecture/helpers/db_helper.dart';
+import 'package:contact_app_bloc_architecture/application/components/dialog/app_dialogs.dart';
+import 'package:contact_app_bloc_architecture/application/screens/crud_contact/bloc/crud_contact_bloc.dart';
+import 'package:contact_app_bloc_architecture/application/screens/crud_contact/widgets/select_and_preview_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -101,7 +101,19 @@ class _CRUDContactScreenState extends State<CRUDContactScreen> {
 
   void onDeleteClickListener(BuildContext context) {
     if (contactDataModel?.id != null) {
-      _crudContactBloc.add(DeleteContactEvent(contactDataModel!));
+      showDialog(
+          context: context,
+          builder: ((_) => AppDialog.getTwoButtonAlertDialog(
+                buildContext: context,
+                title: "ContactApp",
+                content: "Are you sure you want to delete this item?",
+                leftButtonText: "No",
+                rightButtonText: "Yes",
+                leftButtonClickListener: () {},
+                rightButtonClickListener: () {
+                  _crudContactBloc.add(DeleteContactEvent(contactDataModel!));
+                },
+              )));
     } else {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context)

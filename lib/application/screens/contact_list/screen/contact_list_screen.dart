@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../application/screens/contact_list/bloc/contact_list_bloc.dart';
 import '../../../../application/screens/contact_list/widgets/contact_list_item.dart';
-import '../../add_or_edit_contact/screen/crud_contact_screen.dart';
+import '../../crud_contact/screen/crud_contact_screen.dart';
 
 // import '../link_screen_and_block.dart';
 

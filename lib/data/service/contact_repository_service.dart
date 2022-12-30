@@ -1,6 +1,6 @@
 import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
-import 'package:contact_app_bloc_architecture/domain/contact_repository.dart';
-import 'package:contact_app_bloc_architecture/helpers/db_helper.dart';
+import 'package:contact_app_bloc_architecture/domain/repository/contact_repository.dart';
+import 'package:contact_app_bloc_architecture/data/helpers/db_helper.dart';
 import 'package:contact_app_bloc_architecture/common/database_configuration.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:contact_app_bloc_architecture/common/constants.dart';

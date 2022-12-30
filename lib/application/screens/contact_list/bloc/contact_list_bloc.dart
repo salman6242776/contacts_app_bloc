@@ -1,5 +1,5 @@
 import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
-import 'package:contact_app_bloc_architecture/domain/service/contact_repository_service.dart';
+import 'package:contact_app_bloc_architecture/data/service/contact_repository_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'contact_list_event.dart';

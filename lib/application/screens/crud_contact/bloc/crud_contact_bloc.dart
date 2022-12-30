@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:contact_app_bloc_architecture/domain/service/contact_repository_service.dart';
+import 'package:contact_app_bloc_architecture/data/service/contact_repository_service.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
-import 'package:contact_app_bloc_architecture/domain/contact_repository.dart';
+import 'package:contact_app_bloc_architecture/domain/repository/contact_repository.dart';
 
 part 'crud_contact_event.dart';
 part 'crud_contact_state.dart';
