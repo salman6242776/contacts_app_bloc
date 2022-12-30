@@ -63,7 +63,7 @@ class _SelectAndPreviewImageState extends State<SelectAndPreviewImage> {
                   )
                 : const Center(
                     child: Text(
-                      "Image",
+                      "Not Selected.",
                       textAlign: TextAlign.center,
                     ),
                   ),
