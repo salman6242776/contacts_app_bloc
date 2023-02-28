@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:contact_app_bloc_architecture/application/components/dialog/app_dialogs.dart';
-import 'package:contact_app_bloc_architecture/application/screens/crud_contact/bloc/crud_contact_bloc.dart';
-import 'package:contact_app_bloc_architecture/application/screens/crud_contact/widgets/select_and_preview_image.dart';
+import 'package:contact_app_bloc_architecture/presentation/components/dialog/app_dialogs.dart';
+import 'package:contact_app_bloc_architecture/presentation/screens/crud_contact/bloc/crud_contact_bloc.dart';
+import 'package:contact_app_bloc_architecture/presentation/screens/crud_contact/widgets/select_and_preview_image.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

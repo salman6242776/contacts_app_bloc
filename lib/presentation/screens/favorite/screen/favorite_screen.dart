@@ -1,5 +1,5 @@
-import 'package:contact_app_bloc_architecture/application/screens/contact_list/widgets/contact_list_item.dart';
-import 'package:contact_app_bloc_architecture/application/screens/favorite/bloc/favorite_bloc.dart';
+import 'package:contact_app_bloc_architecture/presentation/screens/contact_list/widgets/contact_list_item.dart';
+import 'package:contact_app_bloc_architecture/presentation/screens/favorite/bloc/favorite_bloc.dart';
 import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

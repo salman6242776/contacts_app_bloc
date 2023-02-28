@@ -1,5 +1,5 @@
-import 'package:contact_app_bloc_architecture/application/screens/crud_contact/screen/crud_contact_screen.dart';
-import 'package:contact_app_bloc_architecture/application/screens/favorite/screen/favorite_screen.dart';
+import 'package:contact_app_bloc_architecture/presentation/screens/crud_contact/screen/crud_contact_screen.dart';
+import 'package:contact_app_bloc_architecture/presentation/screens/favorite/screen/favorite_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';

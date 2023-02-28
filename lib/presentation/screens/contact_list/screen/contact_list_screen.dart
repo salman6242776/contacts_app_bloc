@@ -1,45 +1,30 @@
-import 'package:contact_app_bloc_architecture/application/app_drawer.dart';
+import 'package:contact_app_bloc_architecture/presentation/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../application/screens/contact_list/bloc/contact_list_bloc.dart';
-import '../../../../application/screens/contact_list/widgets/contact_list_item.dart';
+import '../../../../presentation/screens/contact_list/bloc/contact_list_bloc.dart';
+import '../../../../presentation/screens/contact_list/widgets/contact_list_item.dart';
 import '../../crud_contact/screen/crud_contact_screen.dart';
 
 // import '../link_screen_and_block.dart';
 
-class ContactListScreen extends StatefulWidget {
-  const ContactListScreen({super.key});
+class ContactListScreen extends StatelessWidget {
+  final ContactListBloc _contactListBloc = ContactListBloc();
 
-  @override
-  State<ContactListScreen> createState() => _ContactListScreenState();
-}
+  ContactListScreen({super.key});
 
-class _ContactListScreenState extends State<ContactListScreen> {
-  late ContactListBloc _contactListBloc;
-
-  @override
-  void initState() {
-    _contactListBloc = ContactListBloc();
-    _getAllContacts();
-    super.initState();
-  }
-
+  // @override
+  // State<ContactListScreen> createState() => _ContactListScreenState();
   void _getAllContacts() {
     _contactListBloc
         .add(ContactListFetchCompletedEvent(contactDataModelList: []));
   }
 
   @override
-  void dispose() {
-    _contactListBloc.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    _getAllContacts();
     return Scaffold(
-      drawer: AppDrawer(),
+      drawer: const AppDrawer(),
       appBar: AppBar(
         title: const Text("Contact List"),
       ),
@@ -99,3 +84,23 @@ class _ContactListScreenState extends State<ContactListScreen> {
           );
   }
 }
+
+// class _ContactListScreenState extends State<ContactListScreen> {
+//   late ContactListBloc _contactListBloc;
+
+//   @override
+//   void initState() {
+//     _contactListBloc = ContactListBloc();
+//     _getAllContacts();
+//     super.initState();
+//   }
+
+
+//   @override
+//   void dispose() {
+//     _contactListBloc.close();
+//     super.dispose();
+//   }
+
+
+// }

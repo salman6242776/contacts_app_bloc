@@ -1,11 +1,11 @@
-import 'package:contact_app_bloc_architecture/application/screens/crud_contact/bloc/crud_contact_bloc.dart';
-import 'package:contact_app_bloc_architecture/application/screens/contact_list/bloc/contact_list_bloc.dart';
-import 'package:contact_app_bloc_architecture/application/screens/favorite/screen/favorite_screen.dart';
+import 'package:contact_app_bloc_architecture/presentation/screens/crud_contact/bloc/crud_contact_bloc.dart';
+import 'package:contact_app_bloc_architecture/presentation/screens/contact_list/bloc/contact_list_bloc.dart';
+import 'package:contact_app_bloc_architecture/presentation/screens/favorite/screen/favorite_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import './application/screens/contact_list/screen/contact_list_screen.dart';
-import 'application/screens/crud_contact/screen/crud_contact_screen.dart';
+import './presentation/screens/contact_list/screen/contact_list_screen.dart';
+import 'presentation/screens/crud_contact/screen/crud_contact_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
             create: ((context) => CRUDContactBloc()),
           )
         ],
-        child: const ContactListScreen(),
+        child: ContactListScreen(),
       ),
       routes: {
         CRUDContactScreen.routeName: (_) => CRUDContactScreen(),
