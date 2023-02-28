@@ -1,8 +1,18 @@
-// part of 'contact_list_bloc.dart';
+part of 'contact_list_bloc.dart';
 
-// @immutable
-// abstract class ContactListState {}
+abstract class ContactListState {}
 
-// class ContactListInitial extends ContactListState {}
+class ContactListStateInitial extends ContactListState {}
 
-// class ContactListFetchStated
+class ContactListStateFetchStarted extends ContactListState {}
+
+class ContactListStateFetchCompletedSuccessfully extends ContactListState {
+  List<ContactDataModel> contactDataModelList;
+
+  ContactListStateFetchCompletedSuccessfully(this.contactDataModelList);
+}
+
+class ContactListStateFetchCompletedWithError extends ContactListState {
+  String errorMessage;
+  ContactListStateFetchCompletedWithError(this.errorMessage);
+}

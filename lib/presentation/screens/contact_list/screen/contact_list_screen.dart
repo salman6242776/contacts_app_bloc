@@ -1,4 +1,6 @@
+import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
 import 'package:contact_app_bloc_architecture/presentation/app_drawer.dart';
+import 'package:contact_app_bloc_architecture/presentation/components/dialog/app_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,8 +15,6 @@ class ContactListScreen extends StatelessWidget {
 
   ContactListScreen({super.key});
 
-  // @override
-  // State<ContactListScreen> createState() => _ContactListScreenState();
   void _getAllContacts() {
     _contactListBloc
         .add(ContactListFetchCompletedEvent(contactDataModelList: []));
@@ -31,7 +31,20 @@ class ContactListScreen extends StatelessWidget {
       body: BlocBuilder(
         bloc: _contactListBloc,
         builder: (context, state) {
-          return getListView(context);
+          if (state is ContactListStateFetchStarted) {
+            return getCenteredProgressCircularIndicator();
+          } else if (state is ContactListStateFetchCompletedWithError) {
+            return AppDialog.getOneButtonAlertDialog(
+                buildContext: context,
+                title: "Error",
+                content: state.errorMessage,
+                rightButtonText: "Ok",
+                rightButtonClickListener: () {});
+          } else if (state is ContactListStateFetchCompletedSuccessfully) {
+            return getListView(context, state.contactDataModelList);
+          } else {
+            return Container();
+          }
         },
         // buildWhen: (previous, current) {
         //   return previous.runtimeType != current.runtimeType;
@@ -48,8 +61,9 @@ class ContactListScreen extends StatelessWidget {
     );
   }
 
-  Widget getListView(BuildContext context) {
-    return _contactListBloc.state.isEmpty
+  Widget getListView(
+      BuildContext context, List<ContactDataModel> contactDataModelList) {
+    return contactDataModelList.isEmpty
         ? Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,7 +86,7 @@ class ContactListScreen extends StatelessWidget {
         : ListView.builder(
             itemBuilder: ((context, index) {
               return ContactListItem(
-                  contactDataModel: _contactListBloc.state[index],
+                  contactDataModel: contactDataModelList[index],
                   onItemClickListener: (selectedContact) {
                     Navigator.of(context)
                         .pushNamed(CRUDContactScreen.routeName,
@@ -80,27 +94,13 @@ class ContactListScreen extends StatelessWidget {
                         .then((value) => _getAllContacts());
                   });
             }),
-            itemCount: _contactListBloc.state.length,
+            itemCount: contactDataModelList.length,
           );
   }
+
+  Widget getCenteredProgressCircularIndicator() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
 }
-
-// class _ContactListScreenState extends State<ContactListScreen> {
-//   late ContactListBloc _contactListBloc;
-
-//   @override
-//   void initState() {
-//     _contactListBloc = ContactListBloc();
-//     _getAllContacts();
-//     super.initState();
-//   }
-
-
-//   @override
-//   void dispose() {
-//     _contactListBloc.close();
-//     super.dispose();
-//   }
-
-
-// }

@@ -29,7 +29,9 @@ class AppDialog {
         //     child: Text(leftButtonText)),
         ElevatedButton(
             onPressed: () {
-              Navigator.of(buildContext).pop();
+              if (Navigator.of(buildContext).canPop()) {
+                Navigator.of(buildContext).pop();
+              }
               rightButtonClickListener();
             },
             child: Text(
