@@ -1,3 +1,4 @@
+import 'package:contact_app_bloc_architecture/common/di/get_it.dart';
 import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
 import 'package:contact_app_bloc_architecture/domain/repository/contact_repository.dart';
 import 'package:contact_app_bloc_architecture/data/helpers/db_helper.dart';
@@ -6,29 +7,29 @@ import 'package:sqflite/sqflite.dart';
 import 'package:contact_app_bloc_architecture/common/constants.dart';
 
 class ContactRepositoryService extends ContactRepository {
-  static ContactRepositoryService? _contactDataSource;
-  Database? _linkedTableWithDatabase;
+  // static ContactRepositoryService? _contactDataSource;
+  // Database? _linkedTableWithDatabase;
 
-  final createTableQuery = 'CREATE TABLE ${TblContactsConfigration.tblName} ('
-      ' ${TblContactsConfigration.id} INTEGER PRIMARY KEY AUTOINCREMENT,'
-      ' ${TblContactsConfigration.name} TEXT NOT NULL,'
-      ' ${TblContactsConfigration.mobileNumber} TEXT,'
-      ' ${TblContactsConfigration.landlineNumber} TEXT,'
-      ' ${TblContactsConfigration.isFavorite} INTEGER NOT NULL,'
-      ' ${TblContactsConfigration.profilePicture} TEXT'
-      ' )';
+  // final createTableQuery = 'CREATE TABLE ${TblContactsConfigration.tblName} ('
+  //     ' ${TblContactsConfigration.id} INTEGER PRIMARY KEY AUTOINCREMENT,'
+  //     ' ${TblContactsConfigration.name} TEXT NOT NULL,'
+  //     ' ${TblContactsConfigration.mobileNumber} TEXT,'
+  //     ' ${TblContactsConfigration.landlineNumber} TEXT,'
+  //     ' ${TblContactsConfigration.isFavorite} INTEGER NOT NULL,'
+  //     ' ${TblContactsConfigration.profilePicture} TEXT'
+  //     ' )';
 
-  ContactRepositoryService._();
+  // ContactRepositoryService._();
 
-  static ContactRepositoryService getInstance() {
-    _contactDataSource ??= ContactRepositoryService._();
-    return _contactDataSource!;
-  }
+  // static ContactRepositoryService getInstance() {
+  //   _contactDataSource ??= ContactRepositoryService._();
+  //   return _contactDataSource!;
+  // }
 
   Future<Database> get linkedTableWithDatabase async {
-    _linkedTableWithDatabase ??=
-        await DbHelper.getDatabase(Constants.databaseName, createTableQuery);
-    return _linkedTableWithDatabase!;
+    // _linkedTableWithDatabase ??=
+    //     await DbHelper.getDatabase(Constants.databaseName, createTableQuery);
+    return await locator.getAsync<Database>();
   }
 
   @override

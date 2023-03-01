@@ -1,37 +1,15 @@
 import 'package:sqflite/sqflite.dart';
-// ignore: depend_on_referenced_packages
-import 'package:path/path.dart';
-// import 'package:contact_app_bloc_architecture/common/constants.dart';
-// import 'package:contact_app_bloc_architecture/common/database_configuration.dart';
+// import 'package:path/path.dart';
 
 class DbHelper {
-  // ignore: prefer_interpolation_to_compose_strings
-  // static const _createTableQuery =
-  //     'CREATE TABLE ${TblContactsConfigration.tblName} ('
-  //     ' ${TblContactsConfigration.id} INTEGER PRIMARY KEY AUTOINCREMENT,'
-  //     ' ${TblContactsConfigration.name} TEXT NOT NULL,'
-  //     ' ${TblContactsConfigration.mobileNumber} TEXT,'
-  //     ' ${TblContactsConfigration.landlineNumber} TEXT,'
-  //     ' ${TblContactsConfigration.isFavorite} INTEGER NOT NULL,'
-  //     ' ${TblContactsConfigration.profilePicture} TEXT'
-  //     ' )';
-
-  // static Future<Database> _getDatabase() async {
+  // static Future<Database> getDatabase(
+  //     String databaseName, String createTableQuery) async {
   //   final dbPath = await getDatabasesPath();
-  //   return await openDatabase(join(dbPath, Constants.databaseName),
+  //   return await openDatabase(join(dbPath, databaseName),
   //       onCreate: (db, version) {
-  //     return db.execute(_createTableQuery);
+  //     return db.execute(createTableQuery);
   //   }, version: 1);
   // }
-
-  static Future<Database> getDatabase(
-      String databaseName, String createTableQuery) async {
-    final dbPath = await getDatabasesPath();
-    return await openDatabase(join(dbPath, databaseName),
-        onCreate: (db, version) {
-      return db.execute(createTableQuery);
-    }, version: 1);
-  }
 
   static Future<int> insert(
       Database sqlDb, String tableName, Map<String, Object> data) async {

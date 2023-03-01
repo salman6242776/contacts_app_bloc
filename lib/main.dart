@@ -1,3 +1,4 @@
+import 'package:contact_app_bloc_architecture/common/di/get_it.dart';
 import 'package:contact_app_bloc_architecture/presentation/screens/crud_contact/bloc/crud_contact_bloc.dart';
 import 'package:contact_app_bloc_architecture/presentation/screens/contact_list/bloc/contact_list_bloc.dart';
 import 'package:contact_app_bloc_architecture/presentation/screens/favorite/screen/favorite_screen.dart';
@@ -8,6 +9,7 @@ import './presentation/screens/contact_list/screen/contact_list_screen.dart';
 import 'presentation/screens/crud_contact/screen/crud_contact_screen.dart';
 
 void main() {
+  setUpGetIt();
   runApp(const MyApp());
 
   // DbHelper.insert(
