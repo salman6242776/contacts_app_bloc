@@ -10,46 +10,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../components/custom_text_form_field.dart';
 import 'package:contact_app_bloc_architecture/data/model/contact_data_model.dart';
 
-class CRUDContactScreen extends StatefulWidget {
+class CRUDContactScreen extends StatelessWidget {
   static const routeName = '/add_edit_contact_screen';
-  CRUDContactScreen({super.key});
+  final CRUDContactBloc _crudContactBloc = CRUDContactBloc();
 
-  @override
-  State<CRUDContactScreen> createState() => _CRUDContactScreenState();
-}
-
-class _CRUDContactScreenState extends State<CRUDContactScreen> {
-  late CRUDContactBloc _crudContactBloc;
-  late StreamSubscription blocSubscription;
-  // = AddEditContactBloc();
   ContactDataModel? contactDataModel;
 
   final _form = GlobalKey<FormState>();
 
-  @override
-  void initState() {
-    _crudContactBloc = CRUDContactBloc();
-
-    blocSubscription = _crudContactBloc.stream.listen((receivedState) {
-      if (receivedState is CreateCompletedState ||
-          receivedState is UpdateCompletedState ||
-          receivedState is DeleteCompletedState) {
-        Navigator.of(context).pop();
-      } else if (receivedState is ToggleFavoriteContactCompletedState) {
-        contactDataModel?.isFavorite = !(contactDataModel?.isFavorite ?? true);
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //     const SnackBar(content: Text("Favorite toggle successfully")));
-      }
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    blocSubscription.cancel();
-    _crudContactBloc.close();
-    super.dispose();
-  }
+  CRUDContactScreen({super.key});
 
   void profilePictureSelectCallback(String imagePath) {
     contactDataModel?.profilePicture = imagePath;
@@ -141,53 +110,52 @@ class _CRUDContactScreenState extends State<CRUDContactScreen> {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(_getAppBarTitle),
-          actions: [
+      appBar: AppBar(
+        title: Text(_getAppBarTitle),
+        actions: [
+          IconButton(
+            onPressed: () {
+              onSaveClickListener(context);
+            },
+            icon: Icon(isEdit ? Icons.update : Icons.save),
+          ),
+          if (isEdit)
             IconButton(
               onPressed: () {
-                onSaveClickListener(context);
+                onDeleteClickListener(context);
               },
-              icon: Icon(isEdit ? Icons.update : Icons.save),
+              icon: const Icon(Icons.delete),
             ),
-            if (isEdit)
-              IconButton(
-                onPressed: () {
-                  onDeleteClickListener(context);
-                },
-                icon: const Icon(Icons.delete),
-              ),
-            if (isEdit)
-              BlocBuilder(
-                bloc: _crudContactBloc,
-                builder: (context, state) {
-                  print("CRUDContactScreen Builder called");
-                  return IconButton(
-                      onPressed: () {
-                        toggleFavoriteOnClickListener(context);
-                      },
-                      icon: Icon(isEdit && contactDataModel?.isFavorite == true
-                          ? Icons.star
-                          : Icons.star_border));
-                },
-                buildWhen: (previous, current) =>
-                    previous.runtimeType != current.runtimeType,
-              ),
-          ],
-        ),
-        body:
-            //  BlocBuilder(
-            //   bloc: _crudContactBloc,
-            //   builder: (context, state) {
-            //     print("CRUDContactScreen Builder called");
-            //     return
-            blockProviderChild(context) //;
-        //   },
-        // ),
-        );
+          if (isEdit)
+            BlocBuilder(
+              bloc: _crudContactBloc,
+              builder: (context, state) {
+                print("CRUDContactScreen Builder called");
+                return IconButton(
+                    onPressed: () {
+                      toggleFavoriteOnClickListener(context);
+                    },
+                    icon: Icon(isEdit && contactDataModel?.isFavorite == true
+                        ? Icons.star
+                        : Icons.star_border));
+              },
+              buildWhen: (previous, current) =>
+                  previous.runtimeType != current.runtimeType,
+            ),
+        ],
+      ),
+      body: BlocProvider<CRUDContactBloc>(
+        create: (ctx) => _crudContactBloc,
+        child: blockProviderChild(),
+        // builder: (context, state) {
+        //   print("CRUDContactScreen Builder called");
+        // //  blockProviderChild();
+        // },
+      ),
+    );
   }
 
-  Widget blockProviderChild(BuildContext context) {
+  Widget blockProviderChild() {
     // AddEditContactState addEditContactState =
     //     context.select(((AddEditContactBloc addEditContactBloc) {
     //   _addEditContactBloc = addEditContactBloc;
@@ -198,59 +166,359 @@ class _CRUDContactScreenState extends State<CRUDContactScreen> {
     //   Navigator.of(context).pop();
     // }
 
-    return _crudContactBloc.state == ShowLoaderState()
-        ? const CircularProgressIndicator()
-        : Padding(
-            padding: const EdgeInsets.all(10),
-            child: Form(
-              key: _form,
-              child: ListView(
-                children: [
-                  CustomTextFormField(
-                      initalValue: contactDataModel?.name ?? "",
-                      label: "Name",
-                      textInputType: TextInputType.text,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        return _isNameValid ? null : "Please enter name";
-                      },
-                      toUpdate: (value) {
-                        contactDataModel?.name = value;
-                      }),
-                  CustomTextFormField(
-                      initalValue: contactDataModel?.mobileNumber ?? "",
-                      label: "Mobile#",
-                      textInputType: TextInputType.phone,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        return _isMobileNumberValid
-                            ? null
-                            : "Please enter mobile number";
-                      },
-                      toUpdate: (value) {
-                        contactDataModel?.mobileNumber = value;
-                      }),
-                  CustomTextFormField(
-                      initalValue: contactDataModel?.landlineNumber ?? "",
-                      label: "Landline#",
-                      textInputType: TextInputType.phone,
-                      textInputAction: TextInputAction.done,
-                      validator: (value) {
-                        return _isLandlineNumberValid
-                            ? null
-                            : "Please enter landline number";
-                      },
-                      toUpdate: (value) {
-                        contactDataModel?.landlineNumber = value;
-                      }),
-                  SelectAndPreviewImage(
-                      imageFilePath: contactDataModel?.profilePicture,
-                      profilePictureSelectCallback: (imagePath) {
-                        profilePictureSelectCallback(imagePath);
-                      }),
-                ],
-              ),
-            ),
-          );
+    return BlocListener<CRUDContactBloc, CRUDContactState>(
+      listener: ((context, state) {
+        if (state is ShowLoaderState) {
+          const CircularProgressIndicator();
+        } else if (state is CreateCompletedState ||
+            state is UpdateCompletedState ||
+            state is DeleteCompletedState) {
+          Navigator.of(context).pop();
+        } else if (state is ToggleFavoriteContactCompletedState) {
+          contactDataModel?.isFavorite =
+              !(contactDataModel?.isFavorite ?? true);
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //     const SnackBar(content: Text("Favorite toggle successfully")));
+        }
+      }),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Form(
+          key: _form,
+          child: ListView(
+            children: [
+              CustomTextFormField(
+                  initalValue: contactDataModel?.name ?? "",
+                  label: "Name",
+                  textInputType: TextInputType.text,
+                  textInputAction: TextInputAction.next,
+                  validator: (value) {
+                    return _isNameValid ? null : "Please enter name";
+                  },
+                  toUpdate: (value) {
+                    contactDataModel?.name = value;
+                  }),
+              CustomTextFormField(
+                  initalValue: contactDataModel?.mobileNumber ?? "",
+                  label: "Mobile#",
+                  textInputType: TextInputType.phone,
+                  textInputAction: TextInputAction.next,
+                  validator: (value) {
+                    return _isMobileNumberValid
+                        ? null
+                        : "Please enter mobile number";
+                  },
+                  toUpdate: (value) {
+                    contactDataModel?.mobileNumber = value;
+                  }),
+              CustomTextFormField(
+                  initalValue: contactDataModel?.landlineNumber ?? "",
+                  label: "Landline#",
+                  textInputType: TextInputType.phone,
+                  textInputAction: TextInputAction.done,
+                  validator: (value) {
+                    return _isLandlineNumberValid
+                        ? null
+                        : "Please enter landline number";
+                  },
+                  toUpdate: (value) {
+                    contactDataModel?.landlineNumber = value;
+                  }),
+              SelectAndPreviewImage(
+                  imageFilePath: contactDataModel?.profilePicture,
+                  profilePictureSelectCallback: (imagePath) {
+                    profilePictureSelectCallback(imagePath);
+                  }),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
+
+// class _CRUDContactScreenState extends State<CRUDContactScreen> {
+//   late CRUDContactBloc _crudContactBloc;
+//   late StreamSubscription blocSubscription;
+//   // = AddEditContactBloc();
+//   ContactDataModel? contactDataModel;
+
+//   final _form = GlobalKey<FormState>();
+
+//   @override
+//   void initState() {
+//     _crudContactBloc = CRUDContactBloc();
+
+//     blocSubscription = _crudContactBloc.stream.listen((receivedState) {
+//       if (receivedState is CreateCompletedState ||
+//           receivedState is UpdateCompletedState ||
+//           receivedState is DeleteCompletedState) {
+//         Navigator.of(context).pop();
+//       } else if (receivedState is ToggleFavoriteContactCompletedState) {
+//         contactDataModel?.isFavorite = !(contactDataModel?.isFavorite ?? true);
+//         // ScaffoldMessenger.of(context).showSnackBar(
+//         //     const SnackBar(content: Text("Favorite toggle successfully")));
+//       }
+//     });
+//     super.initState();
+//   }
+
+//   @override
+//   void dispose() {
+//     blocSubscription.cancel();
+//     _crudContactBloc.close();
+//     super.dispose();
+//   }
+// }
+
+// /////////////////
+// ///
+// ///
+// class CRUDContactScreen extends StatefulWidget {
+
+//   static const routeName = '/add_edit_contact_screen';
+//   CRUDContactScreen({super.key});
+
+//   @override
+//   State<CRUDContactScreen> createState() => _CRUDContactScreenState();
+// }
+
+// class _CRUDContactScreenState extends State<CRUDContactScreen> {
+//   late CRUDContactBloc _crudContactBloc;
+//   late StreamSubscription blocSubscription;
+//   // = AddEditContactBloc();
+//   ContactDataModel? contactDataModel;
+
+//   final _form = GlobalKey<FormState>();
+
+//   @override
+//   void initState() {
+//     _crudContactBloc = CRUDContactBloc();
+
+//     blocSubscription = _crudContactBloc.stream.listen((receivedState) {
+//       if (receivedState is CreateCompletedState ||
+//           receivedState is UpdateCompletedState ||
+//           receivedState is DeleteCompletedState) {
+//         Navigator.of(context).pop();
+//       } else if (receivedState is ToggleFavoriteContactCompletedState) {
+//         contactDataModel?.isFavorite = !(contactDataModel?.isFavorite ?? true);
+//         // ScaffoldMessenger.of(context).showSnackBar(
+//         //     const SnackBar(content: Text("Favorite toggle successfully")));
+//       }
+//     });
+//     super.initState();
+//   }
+
+//   @override
+//   void dispose() {
+//     blocSubscription.cancel();
+//     _crudContactBloc.close();
+//     super.dispose();
+//   }
+
+//   void profilePictureSelectCallback(String imagePath) {
+//     contactDataModel?.profilePicture = imagePath;
+//   }
+
+//   bool get isEdit => contactDataModel != null && contactDataModel?.id != null;
+
+//   bool get _isNameValid =>
+//       contactDataModel != null && contactDataModel?.name.isNotEmpty == true;
+
+//   bool get _isMobileNumberValid =>
+//       contactDataModel != null &&
+//       contactDataModel?.mobileNumber.isNotEmpty == true;
+
+//   bool get _isLandlineNumberValid =>
+//       contactDataModel != null &&
+//       contactDataModel?.landlineNumber.isNotEmpty == true;
+
+//   String get _getAppBarTitle => isEdit ? "Edit Contact" : "Add New Contact";
+
+//   bool _isViewIsValid(BuildContext context) {
+//     ScaffoldMessenger.of(context).hideCurrentSnackBar();
+//     final isValid = _form.currentState?.validate();
+//     if (isValid == true) {
+//       if (contactDataModel?.profilePicture.isNotEmpty == true) {
+//         return true;
+//       } else {
+//         ScaffoldMessenger.of(context).showSnackBar(
+//           const SnackBar(content: Text("Please select profile picture")),
+//         );
+//       }
+//     } else {
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         const SnackBar(content: Text("Please fill required details")),
+//       );
+//     }
+//     return false;
+//   }
+
+//   void onSaveClickListener(BuildContext context) {
+//     if (_isViewIsValid(context)) {
+//       if (contactDataModel?.id != null) {
+//         _crudContactBloc.add(UpdateContactEvent(contactDataModel!));
+//       } else {
+//         _crudContactBloc.add(CreateContactEvent(contactDataModel!));
+//       }
+//     }
+//   }
+
+//   void onDeleteClickListener(BuildContext context) {
+//     if (contactDataModel?.id != null) {
+//       showDialog(
+//           context: context,
+//           builder: ((_) => AppDialog.getTwoButtonAlertDialog(
+//                 buildContext: context,
+//                 title: "ContactApp",
+//                 content: "Are you sure you want to delete this item?",
+//                 leftButtonText: "No",
+//                 rightButtonText: "Yes",
+//                 leftButtonClickListener: () {},
+//                 rightButtonClickListener: () {
+//                   _crudContactBloc.add(DeleteContactEvent(contactDataModel!));
+//                 },
+//               )));
+//     } else {
+//       ScaffoldMessenger.of(context).hideCurrentSnackBar();
+//       ScaffoldMessenger.of(context)
+//           .showSnackBar(const SnackBar(content: Text("No User found!")));
+//     }
+//   }
+
+//   void toggleFavoriteOnClickListener(BuildContext context) {
+//     if (contactDataModel?.id != null) {
+//       _crudContactBloc.add(ToggleFavoriteContactEvent(contactDataModel!));
+//     } else {
+//       ScaffoldMessenger.of(context).hideCurrentSnackBar();
+//       ScaffoldMessenger.of(context)
+//           .showSnackBar(const SnackBar(content: Text("No User found!")));
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     contactDataModel =
+//         ModalRoute.of(context)?.settings.arguments as ContactDataModel? ??
+//             ContactDataModel();
+//     if (contactDataModel?.id != null) {
+//       print("----------------------EDIT-----------------");
+//     }
+
+//     return Scaffold(
+//         appBar: AppBar(
+//           title: Text(_getAppBarTitle),
+//           actions: [
+//             IconButton(
+//               onPressed: () {
+//                 onSaveClickListener(context);
+//               },
+//               icon: Icon(isEdit ? Icons.update : Icons.save),
+//             ),
+//             if (isEdit)
+//               IconButton(
+//                 onPressed: () {
+//                   onDeleteClickListener(context);
+//                 },
+//                 icon: const Icon(Icons.delete),
+//               ),
+//             if (isEdit)
+//               BlocBuilder(
+//                 bloc: _crudContactBloc,
+//                 builder: (context, state) {
+//                   print("CRUDContactScreen Builder called");
+//                   return IconButton(
+//                       onPressed: () {
+//                         toggleFavoriteOnClickListener(context);
+//                       },
+//                       icon: Icon(isEdit && contactDataModel?.isFavorite == true
+//                           ? Icons.star
+//                           : Icons.star_border));
+//                 },
+//                 buildWhen: (previous, current) =>
+//                     previous.runtimeType != current.runtimeType,
+//               ),
+//           ],
+//         ),
+//         body:
+//             //  BlocBuilder(
+//             //   bloc: _crudContactBloc,
+//             //   builder: (context, state) {
+//             //     print("CRUDContactScreen Builder called");
+//             //     return
+//             blockProviderChild(context) //;
+//         //   },
+//         // ),
+//         );
+//   }
+
+//   Widget blockProviderChild(BuildContext context) {
+//     // AddEditContactState addEditContactState =
+//     //     context.select(((AddEditContactBloc addEditContactBloc) {
+//     //   _addEditContactBloc = addEditContactBloc;
+//     //   return addEditContactBloc.state;
+//     // }));
+
+//     // if (addEditContactState is CreateCompletedState) {
+//     //   Navigator.of(context).pop();
+//     // }
+
+//     return _crudContactBloc.state == ShowLoaderState()
+//         ? const CircularProgressIndicator()
+//         : Padding(
+//             padding: const EdgeInsets.all(10),
+//             child: Form(
+//               key: _form,
+//               child: ListView(
+//                 children: [
+//                   CustomTextFormField(
+//                       initalValue: contactDataModel?.name ?? "",
+//                       label: "Name",
+//                       textInputType: TextInputType.text,
+//                       textInputAction: TextInputAction.next,
+//                       validator: (value) {
+//                         return _isNameValid ? null : "Please enter name";
+//                       },
+//                       toUpdate: (value) {
+//                         contactDataModel?.name = value;
+//                       }),
+//                   CustomTextFormField(
+//                       initalValue: contactDataModel?.mobileNumber ?? "",
+//                       label: "Mobile#",
+//                       textInputType: TextInputType.phone,
+//                       textInputAction: TextInputAction.next,
+//                       validator: (value) {
+//                         return _isMobileNumberValid
+//                             ? null
+//                             : "Please enter mobile number";
+//                       },
+//                       toUpdate: (value) {
+//                         contactDataModel?.mobileNumber = value;
+//                       }),
+//                   CustomTextFormField(
+//                       initalValue: contactDataModel?.landlineNumber ?? "",
+//                       label: "Landline#",
+//                       textInputType: TextInputType.phone,
+//                       textInputAction: TextInputAction.done,
+//                       validator: (value) {
+//                         return _isLandlineNumberValid
+//                             ? null
+//                             : "Please enter landline number";
+//                       },
+//                       toUpdate: (value) {
+//                         contactDataModel?.landlineNumber = value;
+//                       }),
+//                   SelectAndPreviewImage(
+//                       imageFilePath: contactDataModel?.profilePicture,
+//                       profilePictureSelectCallback: (imagePath) {
+//                         profilePictureSelectCallback(imagePath);
+//                       }),
+//                 ],
+//               ),
+//             ),
+//           );
+//   }
+// }
+
+
+
